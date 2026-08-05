@@ -122,7 +122,7 @@ async function main() {
   console.log(`Dados atualizados: ${fixtures.length} jogos, ${liveFixtures.length} ao vivo e ${tables[0]?.length || 0} posições.`);
 }
 
-main().catch((error) => {
+await main().catch((error) => {
   console.error(`Falha ao atualizar dados: ${error.message}`);
   process.exit(1);
 });
