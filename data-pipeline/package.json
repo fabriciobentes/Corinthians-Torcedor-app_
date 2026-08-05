@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "corinthians-data-pipeline",
   "private": true,
   "type": "module",
@@ -6,5 +6,8 @@
     "build": "node scripts/build.mjs",
     "fetch": "node scripts/fetch.mjs",
     "all": "node scripts/all.mjs"
+  },
+  "dependencies": {
+    "campeonato-brasileiro-api": "2.0.1"
   }
 }

@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-val corinthiansDataUrl = providers.gradleProperty("CORINTHIANS_DATA_URL").orElse("").get()
+val corinthiansDataUrl = providers.gradleProperty("CORINTHIANS_DATA_URL")
+    .orElse("https://fabriciobentes.github.io/Corinthians-Torcedor-app_")
+    .get()
 
 android {
     namespace = "com.fabricio.corinthianslive"
@@ -13,8 +15,8 @@ android {
         applicationId = "com.fabricio.corinthianslive"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "DATA_BASE_URL", "\"${corinthiansDataUrl.trimEnd('/')}\"")

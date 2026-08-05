@@ -1,8 +1,38 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-04T21:00:00.000Z",
-  "source": "demo",
-  "teamId": 131,
+  "generatedAt": "2026-08-05T02:45:48.318Z",
+  "source": "ge-brasileirao",
+  "teamId": 264,
   "season": 2026,
-  "fixtures": []
+  "coverage": "Brasileirão Série A; rodada atual e histórico acumulado pelo projeto",
+  "fixtures": [
+    {
+      "id": 346315,
+      "competition": "Campeonato Brasileiro 2026",
+      "competitionLogo": "",
+      "round": "22ª rodada",
+      "kickoff": "2026-08-09T18:30:00-03:00",
+      "stadium": "Cícero de Souza Marques",
+      "city": "",
+      "statusShort": "NS",
+      "statusLong": "Agendado",
+      "minute": null,
+      "home": {
+        "id": 280,
+        "name": "Bragantino",
+        "logo": "https://s.sde.globo.com/media/organizations/2021/06/28/bragantino.svg",
+        "winner": null
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": null
+      },
+      "score": {
+        "home": null,
+        "away": null
+      }
+    }
+  ]
 }

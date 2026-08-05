@@ -6,6 +6,7 @@ on:
     paths:
       - "data-pipeline/scripts/**"
       - "data-pipeline/package.json"
+      - "data-pipeline/package-lock.json"
       - ".github/workflows/update-data.yml"
   schedule:
     - cron: "7 * * * *"
@@ -28,9 +29,9 @@ jobs:
           node-version: 22
       - name: Buscar e validar os dados
         working-directory: data-pipeline
-        env:
-          FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
-        run: npm run all
+        run: |
+          npm ci
+          npm run all
       - name: Publicar somente quando houver mudanças
         run: |
           git config user.name "corinthians-live-bot"
