@@ -1,0 +1,24 @@
+﻿# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Android (quando você gerar o projeto no Android Studio)
+**/.gradle/
+**/.gradle-verify/
+**/build/
+**/*.iml
+local.properties
+**/.cxx/
+**/.externalNativeBuild/
+**/.kotlin/
+
+# Secrets
+.env

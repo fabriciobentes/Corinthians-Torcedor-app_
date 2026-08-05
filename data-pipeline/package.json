@@ -1,0 +1,10 @@
+﻿{
+  "name": "corinthians-data-pipeline",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "fetch": "node scripts/fetch.mjs",
+    "all": "node scripts/all.mjs"
+  }
+}
