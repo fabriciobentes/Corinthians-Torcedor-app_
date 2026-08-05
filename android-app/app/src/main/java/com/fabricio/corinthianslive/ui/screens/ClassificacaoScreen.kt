@@ -38,7 +38,7 @@ import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
                         }
                     }
                 }
-                item { Text("P: pontos • J: jogos • V: vitórias • E: empates • D: derrotas • SG: saldo de gols", Modifier.padding(18.dp), color = CorinthiansColors.GrayText, style = androidx.compose.material3.MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium) }
+                item { Text("P: pontos • J: jogos • SG: saldo de gols. A campanha V–E–D aparece abaixo de cada time.", Modifier.padding(18.dp), color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant, style = androidx.compose.material3.MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium) }
             }
         }
     }

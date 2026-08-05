@@ -12,7 +12,10 @@ private val LightColors = lightColorScheme(
     background = CorinthiansColors.Background,
     onBackground = CorinthiansColors.OnSurface,
     surface = CorinthiansColors.Surface,
-    onSurface = CorinthiansColors.OnSurface
+    onSurface = CorinthiansColors.OnSurface,
+    surfaceVariant = androidx.compose.ui.graphics.Color(0xFFF0F0F3),
+    onSurfaceVariant = androidx.compose.ui.graphics.Color(0xFF515159),
+    outlineVariant = androidx.compose.ui.graphics.Color(0xFFD5D5DB)
 )
 
 private val DarkColors = darkColorScheme(
@@ -21,7 +24,10 @@ private val DarkColors = darkColorScheme(
     background = CorinthiansColors.DarkBackground,
     onBackground = CorinthiansColors.White,
     surface = CorinthiansColors.DarkSurface,
-    onSurface = CorinthiansColors.White
+    onSurface = CorinthiansColors.White,
+    surfaceVariant = androidx.compose.ui.graphics.Color(0xFF252529),
+    onSurfaceVariant = androidx.compose.ui.graphics.Color(0xFFD0D0D6),
+    outlineVariant = androidx.compose.ui.graphics.Color(0xFF3C3C42)
 )
 
 @Composable

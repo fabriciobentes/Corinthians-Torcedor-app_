@@ -2,6 +2,8 @@ package com.fabricio.corinthianslive.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
@@ -25,17 +27,25 @@ import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
     val result = state?.getOrNull()
     val finishedCodes = setOf("FT", "AET", "PEN", "WO")
     val liveCodes = setOf("1H", "HT", "2H", "ET", "BT", "P", "SUSP", "INT")
-    val upcoming = result?.data?.filter { it.statusShort !in finishedCodes && it.statusShort !in liveCodes }?.take(12).orEmpty()
-    val finished = result?.data?.filter { it.statusShort in finishedCodes }?.takeLast(6)?.reversed().orEmpty()
+    val upcoming = result?.data?.filter { it.statusShort !in finishedCodes && it.statusShort !in liveCodes }?.take(20).orEmpty()
+    val finished = result?.data?.filter { it.statusShort in finishedCodes }?.takeLast(10)?.reversed().orEmpty()
+    val competitions = result?.data?.map { it.competition }?.distinct().orEmpty()
 
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(top = contentPadding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding() + 18.dp)) {
-        item { CorinthiansTopBar("Jogos", "Agenda e resultados do Timão", onRefresh = { refresh++ }) }
+        item { CorinthiansTopBar("Jogos", "Todas as competições do Timão", onRefresh = { refresh++ }) }
         if (result != null) item { DataStatus(result.source, result.generatedAt, result.notice, result.isDemo) }
         when {
             state == null -> item { LoadingState() }
             state?.isFailure == true -> item { EmptyState("Não foi possível carregar", state?.exceptionOrNull()?.message ?: "Verifique a conexão.", onRetry = { refresh++ }) }
             upcoming.isEmpty() && finished.isEmpty() -> item { EmptyState("Nenhum jogo encontrado", "A fonte ainda não publicou partidas para esta temporada.", onRetry = { refresh++ }) }
             else -> {
+                if (competitions.isNotEmpty()) {
+                    item {
+                        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            competitions.forEach { competition -> Pill(competition, MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant) }
+                        }
+                    }
+                }
                 if (upcoming.isNotEmpty()) { item { AppSectionTitle("Próximos jogos") }; itemsIndexed(upcoming, key = { index, match -> "next-${match.id}-$index" }) { _, match -> MatchCard(match) } }
                 if (finished.isNotEmpty()) { item { AppSectionTitle("Últimos resultados") }; itemsIndexed(finished, key = { index, match -> "last-${match.id}-$index" }) { _, match -> MatchCard(match) } }
             }

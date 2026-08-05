@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">CorinthiansLive</string>
+    <string name="app_name">Timão em Jogo</string>
+    <string name="game_notification_channel_name">Dias de jogo</string>
+    <string name="game_notification_channel_description">Avisos nos dias em que o Corinthians joga</string>
 </resources>

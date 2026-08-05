@@ -12,6 +12,7 @@ yarn-error.log*
 
 # Android (quando você gerar o projeto no Android Studio)
 **/.gradle/
+**/.gradle-codex/
 **/.gradle-verify/
 **/.jdk-17/
 microsoft-jdk-17-windows-x64.zip

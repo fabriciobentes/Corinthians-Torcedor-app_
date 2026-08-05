@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-05T03:29:31.357Z",
+  "source": "ge-corinthians",
+  "teamId": 264,
+  "window": 10,
+  "summary": {
+    "matches": 10,
+    "wins": 3,
+    "draws": 4,
+    "losses": 3,
+    "goalsFor": 11,
+    "goalsAgainst": 11,
+    "cleanSheets": 3,
+    "scoringGames": 7,
+    "goalDifference": 0,
+    "pointsPercentage": 43,
+    "averageGoalsFor": 1.1,
+    "averageGoalsAgainst": 1.1,
+    "currentStreak": "1L"
+  },
+  "form": [
+    "L",
+    "D",
+    "W",
+    "L",
+    "W",
+    "D",
+    "W",
+    "D",
+    "D",
+    "L"
+  ],
+  "competitions": [
+    {
+      "name": "Brasileirão Série A",
+      "matches": 6,
+      "wins": 3,
+      "draws": 2,
+      "losses": 1,
+      "goalsFor": 9,
+      "goalsAgainst": 5
+    },
+    {
+      "name": "CONMEBOL Libertadores",
+      "matches": 2,
+      "wins": 0,
+      "draws": 1,
+      "losses": 1,
+      "goalsFor": 1,
+      "goalsAgainst": 3
+    },
+    {
+      "name": "Amistosos",
+      "matches": 1,
+      "wins": 0,
+      "draws": 1,
+      "losses": 0,
+      "goalsFor": 1,
+      "goalsAgainst": 1
+    },
+    {
+      "name": "Copa do Brasil",
+      "matches": 1,
+      "wins": 0,
+      "draws": 0,
+      "losses": 1,
+      "goalsFor": 0,
+      "goalsAgainst": 2
+    }
+  ],
+  "recentMatches": [
+    {
+      "id": 346456,
+      "competition": "Brasileirão Série A",
+      "competitionLogo": "",
+      "round": "16ª rodada",
+      "kickoff": "2026-05-17T16:00:00-03:00",
+      "stadium": "Nilton Santos (Engenhão)",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 263,
+        "name": "Botafogo",
+        "logo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
+        "winner": true
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 3,
+        "away": 1,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/rj/futebol/brasileirao-serie-a/jogo/17-05-2026/botafogo-corinthians.ghtml",
+      "broadcasters": [
+        "Premiere",
+        "Globo",
+        "Cartola"
+      ]
+    },
+    {
+      "id": 351098,
+      "competition": "CONMEBOL Libertadores",
+      "competitionLogo": "",
+      "round": "5ª rodada",
+      "kickoff": "2026-05-21T21:30:00-03:00",
+      "stadium": "Campeón del Siglo",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 2408,
+        "name": "Peñarol",
+        "logo": "https://s.sde.globo.com/media/organizations/2019/02/18/penarol-svg-13099.svg",
+        "winner": false
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 1,
+        "away": 1,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/sp/futebol/libertadores/jogo/21-05-2026/penarol-corinthians.ghtml",
+      "broadcasters": [
+        "Disney+"
+      ]
+    },
+    {
+      "id": 346488,
+      "competition": "Brasileirão Série A",
+      "competitionLogo": "",
+      "round": "17ª rodada",
+      "kickoff": "2026-05-24T18:30:00-03:00",
+      "stadium": "Neo Química Arena",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": true
+      },
+      "away": {
+        "id": 282,
+        "name": "Atlético-MG",
+        "logo": "https://s.sde.globo.com/media/organizations/2018/03/10/atletico-mg.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 1,
+        "away": 0,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/sp/futebol/brasileirao-serie-a/jogo/24-05-2026/corinthians-atletico-mg.ghtml",
+      "broadcasters": [
+        "Premiere",
+        "Cartola"
+      ]
+    },
+    {
+      "id": 351104,
+      "competition": "CONMEBOL Libertadores",
+      "competitionLogo": "",
+      "round": "6ª rodada",
+      "kickoff": "2026-05-27T21:30:00-03:00",
+      "stadium": "Neo Química Arena",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "away": {
+        "id": 9308,
+        "name": "Platense",
+        "logo": "https://s.sde.globo.com/media/organizations/2025/06/25/Platense.svg",
+        "winner": true
+      },
+      "score": {
+        "home": 0,
+        "away": 2,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/sp/futebol/libertadores/jogo/27-05-2026/corinthians-platense.ghtml",
+      "broadcasters": [
+        "Globo",
+        "Paramount+",
+        "Ge TV"
+      ]
+    },
+    {
+      "id": 346511,
+      "competition": "Brasileirão Série A",
+      "competitionLogo": "",
+      "round": "18ª rodada",
+      "kickoff": "2026-05-30T17:30:00-03:00",
+      "stadium": "Arena do Grêmio",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 284,
+        "name": "Grêmio",
+        "logo": "https://s.sde.globo.com/media/organizations/2018/03/12/gremio.svg",
+        "winner": false
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": true
+      },
+      "score": {
+        "home": 1,
+        "away": 3,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/rs/futebol/brasileirao-serie-a/jogo/30-05-2026/gremio-corinthians.ghtml",
+      "broadcasters": [
+        "Premiere",
+        "Globo",
+        "Cartola",
+        "Ge TV"
+      ]
+    },
+    {
+      "id": 353517,
+      "competition": "Amistosos",
+      "competitionLogo": "",
+      "round": "Amistosos de intertemporada",
+      "kickoff": "2026-07-12T16:00:00-03:00",
+      "stadium": "Olímpico Regional",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 4082,
+        "name": "FC Cascavel",
+        "logo": "https://s.sde.globo.com/media/organizations/2021/12/03/fc-cascavel-svg.svg",
+        "winner": false
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 1,
+        "away": 1,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/pr/futebol/jogo/12-07-2026/fccascavel-corinthians.ghtml",
+      "broadcasters": [
+        "sportv",
+        "Premiere",
+        "globoplay",
+        "Ge TV"
+      ]
+    },
+    {
+      "id": 346538,
+      "competition": "Brasileirão Série A",
+      "competitionLogo": "",
+      "round": "19ª rodada",
+      "kickoff": "2026-07-23T19:30:00-03:00",
+      "stadium": "Neo Química Arena",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": true
+      },
+      "away": {
+        "id": 364,
+        "name": "Remo",
+        "logo": "https://s.sde.globo.com/media/organizations/2021/02/25/Remo-PA.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 3,
+        "away": 0,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/sp/futebol/brasileirao-serie-a/jogo/23-07-2026/corinthians-remo.ghtml",
+      "broadcasters": [
+        "sportv",
+        "Premiere",
+        "globoplay",
+        "Cartola"
+      ]
+    },
+    {
+      "id": 346269,
+      "competition": "Brasileirão Série A",
+      "competitionLogo": "",
+      "round": "20ª rodada",
+      "kickoff": "2026-07-26T16:00:00-03:00",
+      "stadium": "Casa de Apostas Arena Fonte Nova",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 265,
+        "name": "Bahia",
+        "logo": "https://s.sde.globo.com/media/organizations/2018/03/11/bahia.svg",
+        "winner": false
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 1,
+        "away": 1,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/ba/futebol/brasileirao-serie-a/jogo/26-07-2026/bahia-corinthians.ghtml",
+      "broadcasters": [
+        "Premiere",
+        "Globo",
+        "Cartola",
+        "Ge TV"
+      ]
+    },
+    {
+      "id": 346284,
+      "competition": "Brasileirão Série A",
+      "competitionLogo": "",
+      "round": "21ª rodada",
+      "kickoff": "2026-07-30T19:30:00-03:00",
+      "stadium": "Neo Química Arena",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "away": {
+        "id": 293,
+        "name": "Athletico-PR",
+        "logo": "https://s.sde.globo.com/media/organizations/2026/01/07/Athletico-PR.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 0,
+        "away": 0,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/sp/futebol/brasileirao-serie-a/jogo/30-07-2026/corinthians-atletico-pr.ghtml",
+      "broadcasters": [
+        "Premiere",
+        "Cartola"
+      ]
+    },
+    {
+      "id": 353391,
+      "competition": "Copa do Brasil",
+      "competitionLogo": "",
+      "round": "Oitavas de final",
+      "kickoff": "2026-08-02T19:30:00-03:00",
+      "stadium": "Beira-Rio",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 285,
+        "name": "Internacional",
+        "logo": "https://s.sde.globo.com/media/organizations/2018/03/11/internacional.svg",
+        "winner": true
+      },
+      "away": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 2,
+        "away": 0,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/rs/futebol/copa-do-brasil/jogo/02-08-2026/internacional-corinthians.ghtml",
+      "broadcasters": [
+        "Prime Vídeo"
+      ]
+    }
+  ]
+}

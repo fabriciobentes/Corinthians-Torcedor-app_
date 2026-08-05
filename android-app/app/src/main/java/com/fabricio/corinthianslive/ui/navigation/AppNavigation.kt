@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.LiveTv
+import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -17,6 +18,7 @@ import com.fabricio.corinthianslive.ui.screens.AoVivoScreen
 import com.fabricio.corinthianslive.ui.screens.ClassificacaoScreen
 import com.fabricio.corinthianslive.ui.screens.JogosScreen
 import com.fabricio.corinthianslive.ui.screens.ConfiguracoesScreen
+import com.fabricio.corinthianslive.ui.screens.EstatisticasScreen
 import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
 
 private sealed class BottomDest(
@@ -42,6 +44,12 @@ private sealed class BottomDest(
         icon = { Icon(Icons.Filled.Leaderboard, contentDescription = null) }
     )
 
+    data object Estatisticas : BottomDest(
+        route = "estatisticas",
+        label = "Estat.",
+        icon = { Icon(Icons.Filled.QueryStats, contentDescription = null) }
+    )
+
     data object Configuracoes : BottomDest(
         route = "configuracoes",
         label = "Ajustes",
@@ -52,7 +60,7 @@ private sealed class BottomDest(
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val items = listOf(BottomDest.Jogos, BottomDest.AoVivo, BottomDest.Tabela, BottomDest.Configuracoes)
+    val items = listOf(BottomDest.Jogos, BottomDest.AoVivo, BottomDest.Tabela, BottomDest.Estatisticas, BottomDest.Configuracoes)
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
@@ -102,6 +110,9 @@ fun AppNavigation() {
             }
             composable(BottomDest.Tabela.route) {
                 ClassificacaoScreen(contentPadding = innerPadding)
+            }
+            composable(BottomDest.Estatisticas.route) {
+                EstatisticasScreen(contentPadding = innerPadding)
             }
             composable(BottomDest.Configuracoes.route) {
                 ConfiguracoesScreen(contentPadding = innerPadding)

@@ -1,13 +1,16 @@
 # Corinthians Live
 
-Aplicativo Android pessoal para acompanhar os jogos e a classificação do Corinthians.
+Aplicativo Android pessoal para acompanhar a agenda, os resultados e o desempenho do Corinthians.
 
 ## O que funciona
 
-- Próximo jogo do Corinthians no Brasileirão Série A.
-- Histórico dos últimos resultados capturados pelo projeto.
+- Agenda do Corinthians em todas as competições publicadas, incluindo Brasileirão, Copa do Brasil, Libertadores, Paulista e amistosos.
+- Histórico dos resultados em todas essas competições.
 - Placar e situação da partida quando o Corinthians estiver em campo.
-- Classificação completa do Brasileirão com destaque para o Corinthians.
+- Classificação completa do Brasileirão, com alto contraste e destaque para o Corinthians.
+- Estatísticas dos últimos 10 jogos, forma recente e desempenho por competição.
+- Notificação automática nos dias de jogo, com botão de teste na tela **Ajustes**.
+- Ícone oficial do Corinthians preparado para os formatos de ícone do Android.
 - Atualização automática pelo GitHub a cada hora.
 - Funcionamento offline com a última cópia incluída no aplicativo.
 - Endereço dos dados já configurado para este repositório.
@@ -15,11 +18,11 @@ Aplicativo Android pessoal para acompanhar os jogos e a classificação do Corin
 
 ## Dados reais sem chave
 
-O projeto usa a biblioteca gratuita `campeonato-brasileiro-api`, que lê a rodada atual e a classificação publicadas pelo ge. Não é necessário cadastrar chave nem pagar um plano.
+O projeto combina a agenda pública do Corinthians no ge com a biblioteca gratuita `campeonato-brasileiro-api` para a classificação do Brasileirão. Não é necessário cadastrar chave nem pagar um plano.
 
 O secret antigo `FOOTBALL_API_KEY` pode continuar salvo no GitHub, mas não é mais utilizado e pode ser excluído em **Settings → Secrets and variables → Actions**.
 
-A fonte gratuita informa placar e situação da partida, mas não fornece a lista completa de gols, cartões e substituições minuto a minuto. O app mostra essa limitação claramente na tela **Ao vivo**.
+A fonte gratuita informa agenda, placar e situação da partida, mas nem sempre fornece a lista completa de gols, cartões e substituições minuto a minuto. O app mostra essa limitação claramente na tela **Ao vivo**.
 
 ## Publicação automática
 
@@ -71,7 +74,7 @@ Ele também pode ser alterado depois na tela **Ajustes** do aplicativo.
 
 ## Limitações conhecidas
 
-- A fonte gratuita expõe a rodada ativa do Brasileirão, não a temporada inteira.
-- O projeto acumula até oito resultados à medida que as rodadas são atualizadas.
-- Outras competições do Corinthians ainda não estão incluídas.
+- A tabela é exclusiva do Brasileirão; as demais competições aparecem na agenda, nos resultados e nas estatísticas.
+- Os avisos dependem da permissão de notificações do Android e podem sofrer pequenos atrasos por causa da economia de bateria do aparelho.
+- Eventos detalhados minuto a minuto dependem do que a fonte pública disponibilizar.
 - Este é um projeto pessoal e educacional, sem vínculo com o Sport Club Corinthians Paulista ou com o ge.

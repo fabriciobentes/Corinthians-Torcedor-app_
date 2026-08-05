@@ -72,6 +72,57 @@ class CorinthiansRepository(private val context: Context) {
         RepositoryResult(if (rows.isEmpty() && root.optString("source") == "demo") mock.standings() else rows, root.optString("source", "desconhecida"), root.optString("generatedAt"), payload.notice)
     }
 
+    suspend fun stats(): RepositoryResult<TeamStats> = withContext(Dispatchers.IO) {
+        val payload = read("stats.json")
+        val root = JSONObject(payload.text)
+        val summary = root.getJSONObject("summary")
+        val competitionItems = root.optJSONArray("competitions")
+        val recentItems = root.optJSONArray("recentMatches")
+        val formItems = root.optJSONArray("form")
+
+        val stats = TeamStats(
+            window = root.optInt("window", 10),
+            summary = StatsSummary(
+                matches = summary.optInt("matches"),
+                wins = summary.optInt("wins"),
+                draws = summary.optInt("draws"),
+                losses = summary.optInt("losses"),
+                goalsFor = summary.optInt("goalsFor"),
+                goalsAgainst = summary.optInt("goalsAgainst"),
+                goalDifference = summary.optInt("goalDifference"),
+                cleanSheets = summary.optInt("cleanSheets"),
+                scoringGames = summary.optInt("scoringGames"),
+                pointsPercentage = summary.optInt("pointsPercentage"),
+                averageGoalsFor = summary.optDouble("averageGoalsFor"),
+                averageGoalsAgainst = summary.optDouble("averageGoalsAgainst"),
+                currentStreak = summary.optString("currentStreak")
+            ),
+            form = buildList {
+                if (formItems != null) for (index in 0 until formItems.length()) add(formItems.optString(index))
+            },
+            competitions = buildList {
+                if (competitionItems != null) for (index in 0 until competitionItems.length()) {
+                    val item = competitionItems.getJSONObject(index)
+                    add(
+                        CompetitionStats(
+                            name = item.optString("name"),
+                            matches = item.optInt("matches"),
+                            wins = item.optInt("wins"),
+                            draws = item.optInt("draws"),
+                            losses = item.optInt("losses"),
+                            goalsFor = item.optInt("goalsFor"),
+                            goalsAgainst = item.optInt("goalsAgainst")
+                        )
+                    )
+                }
+            },
+            recentMatches = buildList {
+                if (recentItems != null) for (index in 0 until recentItems.length()) add(parseMatch(recentItems.getJSONObject(index)))
+            }
+        )
+        RepositoryResult(stats, root.optString("source", "desconhecida"), root.optString("generatedAt"), payload.notice)
+    }
+
     private fun parseMatch(item: JSONObject): Match {
         val kickoff = runCatching { OffsetDateTime.parse(item.getString("kickoff")) }.getOrNull()
         val home = item.getJSONObject("home")
@@ -82,7 +133,8 @@ class CorinthiansRepository(private val context: Context) {
             date = kickoff?.format(dateFormatter)?.replaceFirstChar { it.titlecase(locale) } ?: "Data a definir",
             time = kickoff?.format(timeFormatter) ?: "--:--", stadium = item.optString("stadium", "Local a definir"), city = item.optString("city"),
             statusShort = item.optString("statusShort", "NS"), statusLong = item.optString("statusLong", "Agendado"),
-            scoreHome = score.optIntOrNull("home"), scoreAway = score.optIntOrNull("away")
+            scoreHome = score.optIntOrNull("home"), scoreAway = score.optIntOrNull("away"),
+            kickoff = item.optString("kickoff")
         )
     }
 

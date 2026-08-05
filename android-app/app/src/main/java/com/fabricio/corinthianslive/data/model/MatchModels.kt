@@ -12,7 +12,8 @@ data class Match(
     val statusShort: String = "NS",
     val statusLong: String = "Agendado",
     val scoreHome: Int? = null,
-    val scoreAway: Int? = null
+    val scoreAway: Int? = null,
+    val kickoff: String = ""
 )
 
 data class LiveMatch(
