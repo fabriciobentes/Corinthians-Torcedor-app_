@@ -12,7 +12,10 @@ yarn-error.log*
 
 # Android (quando você gerar o projeto no Android Studio)
 **/.gradle/
+<<<<<<< Updated upstream
 **/.gradle-verify/
+=======
+>>>>>>> Stashed changes
 **/build/
 **/*.iml
 local.properties

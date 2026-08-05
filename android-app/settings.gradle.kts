@@ -21,3 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "CorinthiansLive"
 include(":app")
+<<<<<<< Updated upstream
+=======
+ 
+>>>>>>> Stashed changes
