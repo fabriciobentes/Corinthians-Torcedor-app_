@@ -1,15 +1,12 @@
 name: Atualizar dados do Corinthians
 
 on:
-<<<<<<< Updated upstream
   push:
     branches: [main, master]
     paths:
       - "data-pipeline/scripts/**"
       - "data-pipeline/package.json"
       - ".github/workflows/update-data.yml"
-=======
->>>>>>> Stashed changes
   schedule:
     - cron: "7 * * * *"
   workflow_dispatch:
