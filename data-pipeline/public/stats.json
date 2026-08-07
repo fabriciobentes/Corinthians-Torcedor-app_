@@ -1,26 +1,25 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-07T00:12:32.110Z",
+  "generatedAt": "2026-08-07T04:02:20.665Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "window": 10,
   "summary": {
     "matches": 10,
-    "wins": 3,
+    "wins": 4,
     "draws": 4,
-    "losses": 3,
-    "goalsFor": 11,
-    "goalsAgainst": 11,
+    "losses": 2,
+    "goalsFor": 12,
+    "goalsAgainst": 9,
     "cleanSheets": 3,
     "scoringGames": 7,
-    "goalDifference": 0,
-    "pointsPercentage": 43,
-    "averageGoalsFor": 1.1,
-    "averageGoalsAgainst": 1.1,
-    "currentStreak": "1L"
+    "goalDifference": 3,
+    "pointsPercentage": 53,
+    "averageGoalsFor": 1.2,
+    "averageGoalsAgainst": 0.9,
+    "currentStreak": "1W"
   },
   "form": [
-    "L",
     "D",
     "W",
     "L",
@@ -29,17 +28,18 @@
     "W",
     "D",
     "D",
-    "L"
+    "L",
+    "W"
   ],
   "competitions": [
     {
       "name": "Brasileirão Série A",
-      "matches": 6,
+      "matches": 5,
       "wins": 3,
       "draws": 2,
-      "losses": 1,
-      "goalsFor": 9,
-      "goalsAgainst": 5
+      "losses": 0,
+      "goalsFor": 8,
+      "goalsAgainst": 2
     },
     {
       "name": "CONMEBOL Libertadores",
@@ -51,6 +51,15 @@
       "goalsAgainst": 3
     },
     {
+      "name": "Copa do Brasil",
+      "matches": 2,
+      "wins": 1,
+      "draws": 0,
+      "losses": 1,
+      "goalsFor": 2,
+      "goalsAgainst": 3
+    },
+    {
       "name": "Amistosos",
       "matches": 1,
       "wins": 0,
@@ -58,53 +67,9 @@
       "losses": 0,
       "goalsFor": 1,
       "goalsAgainst": 1
-    },
-    {
-      "name": "Copa do Brasil",
-      "matches": 1,
-      "wins": 0,
-      "draws": 0,
-      "losses": 1,
-      "goalsFor": 0,
-      "goalsAgainst": 2
     }
   ],
   "recentMatches": [
-    {
-      "id": 346456,
-      "competition": "Brasileirão Série A",
-      "competitionLogo": "",
-      "round": "16ª rodada",
-      "kickoff": "2026-05-17T16:00:00-03:00",
-      "stadium": "Nilton Santos (Engenhão)",
-      "city": "",
-      "statusShort": "FT",
-      "statusLong": "Encerrado",
-      "minute": null,
-      "home": {
-        "id": 263,
-        "name": "Botafogo",
-        "logo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
-        "winner": true
-      },
-      "away": {
-        "id": 264,
-        "name": "Corinthians",
-        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
-        "winner": false
-      },
-      "score": {
-        "home": 3,
-        "away": 1,
-        "penalties": null
-      },
-      "detailsUrl": "https://ge.globo.com/rj/futebol/brasileirao-serie-a/jogo/17-05-2026/botafogo-corinthians.ghtml",
-      "broadcasters": [
-        "Premiere",
-        "Globo",
-        "Cartola"
-      ]
-    },
     {
       "id": 351098,
       "competition": "CONMEBOL Libertadores",
@@ -414,6 +379,39 @@
         "penalties": null
       },
       "detailsUrl": "https://ge.globo.com/rs/futebol/copa-do-brasil/jogo/02-08-2026/internacional-corinthians.ghtml",
+      "broadcasters": [
+        "Prime Vídeo"
+      ]
+    },
+    {
+      "id": 353392,
+      "competition": "Copa do Brasil",
+      "competitionLogo": "",
+      "round": "Oitavas de final",
+      "kickoff": "2026-08-06T20:00:00-03:00",
+      "stadium": "Neo Química Arena",
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+      "home": {
+        "id": 264,
+        "name": "Corinthians",
+        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+        "winner": true
+      },
+      "away": {
+        "id": 285,
+        "name": "Internacional",
+        "logo": "https://s.sde.globo.com/media/organizations/2018/03/11/internacional.svg",
+        "winner": false
+      },
+      "score": {
+        "home": 2,
+        "away": 1,
+        "penalties": null
+      },
+      "detailsUrl": "https://ge.globo.com/sp/futebol/copa-do-brasil/jogo/06-08-2026/corinthians-internacional.ghtml",
       "broadcasters": [
         "Prime Vídeo"
       ]

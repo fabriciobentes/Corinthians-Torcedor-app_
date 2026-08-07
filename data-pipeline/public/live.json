@@ -1,44 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-07T00:12:32.110Z",
+  "generatedAt": "2026-08-07T04:02:20.665Z",
   "source": "ge-corinthians",
   "coverage": "Placar e situação da partida; lances minuto a minuto dependem da cobertura da fonte",
-  "liveMatches": [
-    {
-      "id": 353392,
-      "competition": "Copa do Brasil",
-      "competitionLogo": "",
-      "round": "Oitavas de final",
-      "kickoff": "2026-08-06T20:00:00-03:00",
-      "stadium": "Neo Química Arena",
-      "city": "",
-      "statusShort": "1H",
-      "statusLong": "Ao vivo",
-      "minute": null,
-      "home": {
-        "id": 264,
-        "name": "Corinthians",
-        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
-        "winner": null
-      },
-      "away": {
-        "id": 285,
-        "name": "Internacional",
-        "logo": "https://s.sde.globo.com/media/organizations/2018/03/11/internacional.svg",
-        "winner": null
-      },
-      "score": {
-        "home": 1,
-        "away": 0,
-        "penalties": null
-      },
-      "detailsUrl": "https://ge.globo.com/sp/futebol/copa-do-brasil/jogo/06-08-2026/corinthians-internacional.ghtml",
-      "broadcasters": [
-        "Prime Vídeo"
-      ]
-    }
-  ],
-  "eventsByFixture": {
-    "353392": []
-  }
+  "liveMatches": [],
+  "eventsByFixture": {}
 }
