@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-08T22:42:53.481Z",
+  "generatedAt": "2026-08-08T23:40:11.016Z",
   "source": "ge-corinthians",
   "competition": {
     "id": 2013,
@@ -108,22 +108,6 @@
       },
       {
         "position": 7,
-        "teamId": 282,
-        "teamName": "Atlético-MG",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/10/atletico-mg.svg",
-        "points": 31,
-        "played": 21,
-        "wins": 9,
-        "draws": 4,
-        "losses": 8,
-        "goalsFor": 27,
-        "goalsAgainst": 26,
-        "goalDifference": 1,
-        "form": "LWDWW",
-        "description": "Sul-Americana"
-      },
-      {
-        "position": 8,
         "teamId": 283,
         "teamName": "Cruzeiro",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
@@ -139,7 +123,7 @@
         "description": "Sul-Americana"
       },
       {
-        "position": 9,
+        "position": 8,
         "teamId": 263,
         "teamName": "Botafogo",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
@@ -152,6 +136,22 @@
         "goalsAgainst": 32,
         "goalDifference": 2,
         "form": "WDLWW",
+        "description": "Sul-Americana"
+      },
+      {
+        "position": 9,
+        "teamId": 282,
+        "teamName": "Atlético-MG",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/10/atletico-mg.svg",
+        "points": 29,
+        "played": 21,
+        "wins": 8,
+        "draws": 5,
+        "losses": 8,
+        "goalsFor": 27,
+        "goalsAgainst": 27,
+        "goalDifference": 0,
+        "form": "LWDWD",
         "description": "Sul-Americana"
       },
       {
@@ -175,15 +175,15 @@
         "teamId": 294,
         "teamName": "Coritiba",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
-        "points": 27,
-        "played": 21,
+        "points": 28,
+        "played": 22,
         "wins": 7,
-        "draws": 6,
+        "draws": 7,
         "losses": 8,
         "goalsFor": 25,
         "goalsAgainst": 28,
         "goalDifference": -3,
-        "form": "WLLDL",
+        "form": "LLDLD",
         "description": "Sul-Americana"
       },
       {
@@ -284,6 +284,22 @@
       },
       {
         "position": 18,
+        "teamId": 364,
+        "teamName": "Remo",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/25/Remo-PA.svg",
+        "points": 22,
+        "played": 22,
+        "wins": 5,
+        "draws": 7,
+        "losses": 10,
+        "goalsFor": 26,
+        "goalsAgainst": 36,
+        "goalDifference": -10,
+        "form": "WLWLD",
+        "description": "Rebaixados"
+      },
+      {
+        "position": 19,
         "teamId": 267,
         "teamName": "Vasco",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2021/09/04/vasco_SVG.svg",
@@ -299,35 +315,19 @@
         "description": "Rebaixados"
       },
       {
-        "position": 19,
-        "teamId": 364,
-        "teamName": "Remo",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/25/Remo-PA.svg",
-        "points": 21,
-        "played": 22,
-        "wins": 5,
-        "draws": 6,
-        "losses": 11,
-        "goalsFor": 25,
-        "goalsAgainst": 36,
-        "goalDifference": -11,
-        "form": "WLWLL",
-        "description": "Rebaixados"
-      },
-      {
         "position": 20,
         "teamId": 315,
         "teamName": "Chapecoense",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2021/06/21/CHAPECOENSE-2018.svg",
-        "points": 10,
-        "played": 20,
+        "points": 11,
+        "played": 21,
         "wins": 1,
-        "draws": 7,
+        "draws": 8,
         "losses": 12,
         "goalsFor": 19,
         "goalsAgainst": 41,
         "goalDifference": -22,
-        "form": "LLLLD",
+        "form": "LLLDD",
         "description": "Rebaixados"
       }
     ]
