@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-09T15:43:10.821Z",
+  "generatedAt": "2026-08-09T16:49:58.084Z",
   "source": "ge-corinthians",
   "competition": {
     "id": 2013,
@@ -76,6 +76,22 @@
       },
       {
         "position": 5,
+        "teamId": 283,
+        "teamName": "Cruzeiro",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
+        "points": 33,
+        "played": 22,
+        "wins": 9,
+        "draws": 6,
+        "losses": 7,
+        "goalsFor": 30,
+        "goalsAgainst": 31,
+        "goalDifference": -1,
+        "form": "DWLWW",
+        "description": "Pré-Libertadores"
+      },
+      {
+        "position": 6,
         "teamId": 265,
         "teamName": "Bahia",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/bahia.svg",
@@ -88,10 +104,10 @@
         "goalsAgainst": 25,
         "goalDifference": 4,
         "form": "LWDDD",
-        "description": "Pré-Libertadores"
+        "description": "Sul-Americana"
       },
       {
-        "position": 6,
+        "position": 7,
         "teamId": 280,
         "teamName": "Bragantino",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2021/06/28/bragantino.svg",
@@ -104,22 +120,6 @@
         "goalsAgainst": 20,
         "goalDifference": 6,
         "form": "WWWDD",
-        "description": "Sul-Americana"
-      },
-      {
-        "position": 7,
-        "teamId": 283,
-        "teamName": "Cruzeiro",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
-        "points": 31,
-        "played": 22,
-        "wins": 8,
-        "draws": 7,
-        "losses": 7,
-        "goalsFor": 28,
-        "goalsAgainst": 31,
-        "goalDifference": -3,
-        "form": "DWLWD",
         "description": "Sul-Americana"
       },
       {
@@ -239,15 +239,15 @@
         "teamId": 2305,
         "teamName": "Mirassol",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2026/07/17/MIrassol.svg",
-        "points": 24,
+        "points": 23,
         "played": 21,
         "wins": 6,
-        "draws": 6,
-        "losses": 9,
+        "draws": 5,
+        "losses": 10,
         "goalsFor": 24,
-        "goalsAgainst": 28,
-        "goalDifference": -4,
-        "form": "LWDWD",
+        "goalsAgainst": 30,
+        "goalDifference": -6,
+        "form": "LWDWL",
         "description": ""
       },
       {
