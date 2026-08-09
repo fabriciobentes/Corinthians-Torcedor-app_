@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-09T22:46:06.111Z",
+  "generatedAt": "2026-08-09T23:42:08.632Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "season": 2026,
@@ -730,7 +730,7 @@
       },
       "score": {
         "home": 0,
-        "away": 0,
+        "away": 2,
         "penalties": null
       },
       "detailsUrl": "https://ge.globo.com/sp/vale-do-paraiba-regiao/futebol/brasileirao-serie-a/jogo/09-08-2026/bragantino-corinthians.ghtml",
