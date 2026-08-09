@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-09T13:11:49.455Z",
+  "generatedAt": "2026-08-09T14:48:27.806Z",
   "source": "ge-corinthians",
   "competition": {
     "id": 2013,
@@ -108,6 +108,22 @@
       },
       {
         "position": 7,
+        "teamId": 283,
+        "teamName": "Cruzeiro",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
+        "points": 31,
+        "played": 22,
+        "wins": 8,
+        "draws": 7,
+        "losses": 7,
+        "goalsFor": 28,
+        "goalsAgainst": 31,
+        "goalDifference": -3,
+        "form": "DWLWD",
+        "description": "Sul-Americana"
+      },
+      {
+        "position": 8,
         "teamId": 263,
         "teamName": "Botafogo",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
@@ -123,7 +139,7 @@
         "description": "Sul-Americana"
       },
       {
-        "position": 8,
+        "position": 9,
         "teamId": 294,
         "teamName": "Coritiba",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
@@ -136,22 +152,6 @@
         "goalsAgainst": 29,
         "goalDifference": -2,
         "form": "LLDLW",
-        "description": "Sul-Americana"
-      },
-      {
-        "position": 9,
-        "teamId": 283,
-        "teamName": "Cruzeiro",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
-        "points": 30,
-        "played": 21,
-        "wins": 8,
-        "draws": 6,
-        "losses": 7,
-        "goalsFor": 27,
-        "goalsAgainst": 30,
-        "goalDifference": -3,
-        "form": "WDWLW",
         "description": "Sul-Americana"
       },
       {
@@ -239,15 +239,15 @@
         "teamId": 2305,
         "teamName": "Mirassol",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2026/07/17/MIrassol.svg",
-        "points": 23,
-        "played": 20,
+        "points": 24,
+        "played": 21,
         "wins": 6,
-        "draws": 5,
+        "draws": 6,
         "losses": 9,
-        "goalsFor": 23,
-        "goalsAgainst": 27,
+        "goalsFor": 24,
+        "goalsAgainst": 28,
         "goalDifference": -4,
-        "form": "WLWDW",
+        "form": "LWDWD",
         "description": ""
       },
       {
