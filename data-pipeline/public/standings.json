@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-08T23:40:11.016Z",
+  "generatedAt": "2026-08-09T02:24:55.136Z",
   "source": "ge-corinthians",
   "competition": {
     "id": 2013,
@@ -63,15 +63,15 @@
         "teamId": 266,
         "teamName": "Fluminense",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/fluminense.svg",
-        "points": 34,
-        "played": 21,
+        "points": 35,
+        "played": 22,
         "wins": 9,
-        "draws": 7,
+        "draws": 8,
         "losses": 5,
-        "goalsFor": 30,
-        "goalsAgainst": 25,
+        "goalsFor": 31,
+        "goalsAgainst": 26,
         "goalDifference": 5,
-        "form": "LDDDD",
+        "form": "DDDDD",
         "description": "Libertadores"
       },
       {
@@ -108,6 +108,38 @@
       },
       {
         "position": 7,
+        "teamId": 263,
+        "teamName": "Botafogo",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
+        "points": 30,
+        "played": 21,
+        "wins": 8,
+        "draws": 6,
+        "losses": 7,
+        "goalsFor": 35,
+        "goalsAgainst": 33,
+        "goalDifference": 2,
+        "form": "DLWWD",
+        "description": "Sul-Americana"
+      },
+      {
+        "position": 8,
+        "teamId": 294,
+        "teamName": "Coritiba",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
+        "points": 30,
+        "played": 22,
+        "wins": 8,
+        "draws": 6,
+        "losses": 8,
+        "goalsFor": 27,
+        "goalsAgainst": 29,
+        "goalDifference": -2,
+        "form": "LLDLW",
+        "description": "Sul-Americana"
+      },
+      {
+        "position": 9,
         "teamId": 283,
         "teamName": "Cruzeiro",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
@@ -123,23 +155,7 @@
         "description": "Sul-Americana"
       },
       {
-        "position": 8,
-        "teamId": 263,
-        "teamName": "Botafogo",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
-        "points": 29,
-        "played": 20,
-        "wins": 8,
-        "draws": 5,
-        "losses": 7,
-        "goalsFor": 34,
-        "goalsAgainst": 32,
-        "goalDifference": 2,
-        "form": "WDLWW",
-        "description": "Sul-Americana"
-      },
-      {
-        "position": 9,
+        "position": 10,
         "teamId": 282,
         "teamName": "Atlético-MG",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/10/atletico-mg.svg",
@@ -155,7 +171,7 @@
         "description": "Sul-Americana"
       },
       {
-        "position": 10,
+        "position": 11,
         "teamId": 264,
         "teamName": "Corinthians",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
@@ -168,22 +184,6 @@
         "goalsAgainst": 20,
         "goalDifference": 2,
         "form": "WWWDD",
-        "description": "Sul-Americana"
-      },
-      {
-        "position": 11,
-        "teamId": 294,
-        "teamName": "Coritiba",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
-        "points": 28,
-        "played": 22,
-        "wins": 7,
-        "draws": 7,
-        "losses": 8,
-        "goalsFor": 25,
-        "goalsAgainst": 28,
-        "goalDifference": -3,
-        "form": "LLDLD",
         "description": "Sul-Americana"
       },
       {
@@ -319,15 +319,15 @@
         "teamId": 315,
         "teamName": "Chapecoense",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2021/06/21/CHAPECOENSE-2018.svg",
-        "points": 11,
+        "points": 10,
         "played": 21,
         "wins": 1,
-        "draws": 8,
-        "losses": 12,
-        "goalsFor": 19,
-        "goalsAgainst": 41,
-        "goalDifference": -22,
-        "form": "LLLDD",
+        "draws": 7,
+        "losses": 13,
+        "goalsFor": 20,
+        "goalsAgainst": 43,
+        "goalDifference": -23,
+        "form": "LLLDL",
         "description": "Rebaixados"
       }
     ]
