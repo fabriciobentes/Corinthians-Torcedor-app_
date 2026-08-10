@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-10T13:38:27.155Z",
+  "generatedAt": "2026-08-10T15:12:59.683Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "season": 2026,
@@ -765,7 +765,10 @@
         "penalties": null
       },
       "detailsUrl": "",
-      "broadcasters": []
+      "broadcasters": [
+        "Cartola",
+        "Prime Vídeo"
+      ]
     },
     {
       "id": 353268,
