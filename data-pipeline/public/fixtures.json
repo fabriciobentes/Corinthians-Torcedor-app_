@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-09T23:42:08.632Z",
+  "generatedAt": "2026-08-10T02:30:02.691Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "season": 2026,
@@ -12,42 +12,6 @@
     "Copa do Brasil"
   ],
   "fixtures": [
-    {
-      "id": 351024,
-      "competition": "CONMEBOL Libertadores",
-      "competitionLogo": "",
-      "round": "2ª rodada",
-      "kickoff": "2026-04-15T21:30:00-03:00",
-      "stadium": "Neo Química Arena",
-      "city": "",
-      "statusShort": "FT",
-      "statusLong": "Encerrado",
-      "minute": null,
-      "home": {
-        "id": 264,
-        "name": "Corinthians",
-        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
-        "winner": true
-      },
-      "away": {
-        "id": 2485,
-        "name": "Santa Fe",
-        "logo": "https://s.sde.globo.com/media/organizations/2023/05/01/Santa_Fe.svg",
-        "winner": false
-      },
-      "score": {
-        "home": 2,
-        "away": 0,
-        "penalties": null
-      },
-      "detailsUrl": "https://ge.globo.com/sp/futebol/libertadores/jogo/15-04-2026/corinthians-independiente-santa-fe.ghtml",
-      "broadcasters": [
-        "Globo",
-        "globoplay",
-        "Paramount+",
-        "Ge TV"
-      ]
-    },
     {
       "id": 346359,
       "competition": "Brasileirão Série A",
@@ -713,20 +677,20 @@
       "kickoff": "2026-08-09T18:30:00-03:00",
       "stadium": "Cícero de Souza Marques",
       "city": "",
-      "statusShort": "1H",
-      "statusLong": "Ao vivo",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
       "minute": null,
       "home": {
         "id": 280,
         "name": "Bragantino",
         "logo": "https://s.sde.globo.com/media/organizations/2021/06/28/bragantino.svg",
-        "winner": null
+        "winner": false
       },
       "away": {
         "id": 264,
         "name": "Corinthians",
         "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
-        "winner": null
+        "winner": true
       },
       "score": {
         "home": 0,

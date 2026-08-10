@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-09T23:42:08.632Z",
+  "generatedAt": "2026-08-10T02:30:02.691Z",
   "source": "ge-corinthians",
   "competition": {
     "id": 2013,
@@ -36,9 +36,9 @@
         "wins": 12,
         "draws": 6,
         "losses": 3,
-        "goalsFor": 38,
+        "goalsFor": 39,
         "goalsAgainst": 18,
-        "goalDifference": 20,
+        "goalDifference": 21,
         "form": "WWDDW",
         "description": "Libertadores"
       },
@@ -213,8 +213,8 @@
         "draws": 5,
         "losses": 10,
         "goalsFor": 22,
-        "goalsAgainst": 32,
-        "goalDifference": -10,
+        "goalsAgainst": 33,
+        "goalDifference": -11,
         "form": "LWLLL",
         "description": ""
       },
