@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-13T23:53:34.496Z",
+  "generatedAt": "2026-08-14T02:40:34.075Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "season": 2026,
@@ -727,8 +727,8 @@
         "winner": null
       },
       "score": {
-        "home": null,
-        "away": null,
+        "home": 0,
+        "away": 0,
         "penalties": null
       },
       "detailsUrl": "https://ge.globo.com/futebol/libertadores/jogo/13-08-2026/rosario-central-corinthians.ghtml",
