@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T02:40:34.075Z",
+  "generatedAt": "2026-08-14T04:57:38.835Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "season": 2026,
@@ -12,42 +12,6 @@
     "Copa do Brasil"
   ],
   "fixtures": [
-    {
-      "id": 346359,
-      "competition": "Brasileirão Série A",
-      "competitionLogo": "",
-      "round": "12ª rodada",
-      "kickoff": "2026-04-18T20:00:00-03:00",
-      "stadium": "Barradão",
-      "city": "",
-      "statusShort": "FT",
-      "statusLong": "Encerrado",
-      "minute": null,
-      "home": {
-        "id": 287,
-        "name": "Vitória",
-        "logo": "https://s.sde.globo.com/media/organizations/2025/12/18/Vitoria_2025.svg",
-        "winner": false
-      },
-      "away": {
-        "id": 264,
-        "name": "Corinthians",
-        "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
-        "winner": false
-      },
-      "score": {
-        "home": 0,
-        "away": 0,
-        "penalties": null
-      },
-      "detailsUrl": "https://ge.globo.com/ba/futebol/brasileirao-serie-a/jogo/18-04-2026/vitoria-corinthians.ghtml",
-      "broadcasters": [
-        "sportv",
-        "Premiere",
-        "globoplay",
-        "Cartola"
-      ]
-    },
     {
       "id": 352089,
       "competition": "Copa do Brasil",
@@ -711,20 +675,20 @@
       "kickoff": "2026-08-13T21:30:00-03:00",
       "stadium": "Gigante Arroyito",
       "city": "",
-      "statusShort": "1H",
-      "statusLong": "Ao vivo",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
       "minute": null,
       "home": {
         "id": 2412,
         "name": "Rosario Central",
         "logo": "https://s.sde.globo.com/media/organizations/2024/03/26/ROSARIO_CENTRAL.svg",
-        "winner": null
+        "winner": false
       },
       "away": {
         "id": 264,
         "name": "Corinthians",
         "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
-        "winner": null
+        "winner": false
       },
       "score": {
         "home": 0,
