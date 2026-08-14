@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T17:07:32.537Z",
+  "generatedAt": "2026-08-14T19:09:23.212Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "season": 2026,
@@ -796,15 +796,18 @@
         "penalties": null
       },
       "detailsUrl": "",
-      "broadcasters": []
+      "broadcasters": [
+        "Premiere",
+        "Cartola"
+      ]
     },
     {
       "id": 346448,
       "competition": "Brasileirão Série A",
       "competitionLogo": "",
       "round": "25ª rodada",
-      "kickoff": "2026-08-30T00:00:00-03:00",
-      "stadium": "Local a definir",
+      "kickoff": "2026-08-30T16:00:00-03:00",
+      "stadium": "Neo Química Arena",
       "city": "",
       "statusShort": "NS",
       "statusLong": "Agendado",
