@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-15T23:31:13.544Z",
+  "generatedAt": "2026-08-16T01:54:35.743Z",
   "source": "ge-corinthians",
   "competition": {
     "id": 2013,
@@ -140,6 +140,22 @@
       },
       {
         "position": 9,
+        "teamId": 294,
+        "teamName": "Coritiba",
+        "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
+        "points": 31,
+        "played": 23,
+        "wins": 8,
+        "draws": 7,
+        "losses": 8,
+        "goalsFor": 28,
+        "goalsAgainst": 30,
+        "goalDifference": -2,
+        "form": "LDLWD",
+        "description": "Sul-Americana"
+      },
+      {
+        "position": 10,
         "teamId": 263,
         "teamName": "Botafogo",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
@@ -152,22 +168,6 @@
         "goalsAgainst": 33,
         "goalDifference": 2,
         "form": "DLWWD",
-        "description": "Sul-Americana"
-      },
-      {
-        "position": 10,
-        "teamId": 294,
-        "teamName": "Coritiba",
-        "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
-        "points": 30,
-        "played": 22,
-        "wins": 8,
-        "draws": 6,
-        "losses": 8,
-        "goalsFor": 27,
-        "goalsAgainst": 29,
-        "goalDifference": -2,
-        "form": "LLDLW",
         "description": "Sul-Americana"
       },
       {
@@ -191,15 +191,15 @@
         "teamId": 276,
         "teamName": "São Paulo",
         "teamLogo": "https://s.sde.globo.com/media/organizations/2018/03/11/sao-paulo.svg",
-        "points": 26,
-        "played": 21,
+        "points": 27,
+        "played": 22,
         "wins": 7,
-        "draws": 5,
+        "draws": 6,
         "losses": 9,
-        "goalsFor": 26,
-        "goalsAgainst": 25,
+        "goalsFor": 27,
+        "goalsAgainst": 26,
         "goalDifference": 1,
-        "form": "DLLDL",
+        "form": "LLDLD",
         "description": ""
       },
       {
