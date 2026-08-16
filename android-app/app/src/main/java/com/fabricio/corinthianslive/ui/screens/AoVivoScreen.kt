@@ -45,6 +45,7 @@ import com.fabricio.corinthianslive.data.model.TeamMatchStats
 import com.fabricio.corinthianslive.data.model.TeamSquad
 import com.fabricio.corinthianslive.ui.components.AppCard
 import com.fabricio.corinthianslive.ui.components.AppSectionTitle
+import com.fabricio.corinthianslive.ui.components.ComparisonStat
 import com.fabricio.corinthianslive.ui.components.CorinthiansTopBar
 import com.fabricio.corinthianslive.ui.components.DataStatus
 import com.fabricio.corinthianslive.ui.components.EmptyState
@@ -277,32 +278,18 @@ private fun MatchStatsCard(home: LiveMatch, homeStats: TeamMatchStats, awayStats
             Text(home.home, modifier = Modifier.weight(1f), fontWeight = FontWeight.Black)
             Text(home.away, modifier = Modifier.weight(1f), fontWeight = FontWeight.Black, textAlign = TextAlign.End)
         }
-        Spacer(Modifier.height(10.dp))
-        StatLine("Chutes no gol", homeStats.shotsOnGoal, awayStats.shotsOnGoal)
-        StatLine("Chutes para fora", homeStats.shotsOffGoal, awayStats.shotsOffGoal)
-        StatLine("Chutes bloqueados", homeStats.blockedShots, awayStats.blockedShots)
-        StatLine("Posse de bola", homeStats.ballPossession, awayStats.ballPossession, "%")
-        StatLine("Faltas", homeStats.fouls, awayStats.fouls)
-        StatLine("Escanteios", homeStats.corners, awayStats.corners)
-        StatLine("Impedimentos", homeStats.offsides, awayStats.offsides)
-        StatLine("Defesas", homeStats.saves, awayStats.saves)
-        StatLine("Cartões amarelos", homeStats.yellowCards, awayStats.yellowCards)
-        StatLine("Cartões vermelhos", homeStats.redCards, awayStats.redCards)
-    }
-}
-
-@Composable
-private fun StatLine(label: String, home: Int, away: Int, suffix: String = "") {
-    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("$home$suffix", modifier = Modifier.weight(1f), fontWeight = FontWeight.Black)
-        Text(
-            label,
-            modifier = Modifier.weight(2f),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodySmall
-        )
-        Text("$away$suffix", modifier = Modifier.weight(1f), fontWeight = FontWeight.Black, textAlign = TextAlign.End)
+        Spacer(Modifier.height(14.dp))
+        val homeIsCorinthians = home.home.contains("Corinthians", true)
+        ComparisonStat("Chutes no gol", homeStats.shotsOnGoal, awayStats.shotsOnGoal, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Chutes para fora", homeStats.shotsOffGoal, awayStats.shotsOffGoal, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Chutes bloqueados", homeStats.blockedShots, awayStats.blockedShots, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Posse de bola", homeStats.ballPossession, awayStats.ballPossession, "%", homeIsCorinthians)
+        ComparisonStat("Faltas", homeStats.fouls, awayStats.fouls, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Escanteios", homeStats.corners, awayStats.corners, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Impedimentos", homeStats.offsides, awayStats.offsides, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Defesas", homeStats.saves, awayStats.saves, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Cartões amarelos", homeStats.yellowCards, awayStats.yellowCards, homeIsCorinthians = homeIsCorinthians)
+        ComparisonStat("Cartões vermelhos", homeStats.redCards, awayStats.redCards, homeIsCorinthians = homeIsCorinthians)
     }
 }
 

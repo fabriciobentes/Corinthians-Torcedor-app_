@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,10 +17,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -33,10 +39,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.fabricio.corinthianslive.data.AppThemeMode
 import com.fabricio.corinthianslive.data.CorinthiansRepository
 import com.fabricio.corinthianslive.notifications.GameNotificationManager
 import com.fabricio.corinthianslive.notifications.NotificationPreferences
@@ -47,7 +55,11 @@ import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
 import kotlinx.coroutines.launch
 
 @Composable
-fun ConfiguracoesScreen(contentPadding: PaddingValues) {
+fun ConfiguracoesScreen(
+    contentPadding: PaddingValues,
+    themeMode: AppThemeMode,
+    onThemeModeChanged: (AppThemeMode) -> Unit
+) {
     val context = LocalContext.current
     val repository = remember { CorinthiansRepository(context.applicationContext) }
     val scope = rememberCoroutineScope()
@@ -55,8 +67,7 @@ fun ConfiguracoesScreen(contentPadding: PaddingValues) {
     var permissionGranted by remember {
         mutableStateOf(
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
         )
     }
     var notificationMessage by remember { mutableStateOf<String?>(null) }
@@ -74,12 +85,44 @@ fun ConfiguracoesScreen(contentPadding: PaddingValues) {
 
     LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding(),
-            bottom = contentPadding.calculateBottomPadding() + 18.dp
-        )
+        contentPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding() + 18.dp)
     ) {
-        item { CorinthiansTopBar("Configurações", "Avisos e conexão automática com o GitHub") }
+        item { CorinthiansTopBar("Configurações", "Aparência, avisos e conexão automática") }
+
+        item { AppSectionTitle("Aparência") }
+        item {
+            AppCard(accent = CorinthiansColors.Gold) {
+                Text("MODO DO APLICATIVO", color = CorinthiansColors.Gold, style = MaterialTheme.typography.labelSmall)
+                Spacer(Modifier.height(4.dp))
+                Text("Escolha como deseja visualizar", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "O contraste dos textos e dos cartões é ajustado automaticamente.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(Modifier.height(13.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    ThemeOption(
+                        label = "Sistema",
+                        icon = Icons.Default.PhoneAndroid,
+                        selected = themeMode == AppThemeMode.System,
+                        modifier = Modifier.weight(1f)
+                    ) { onThemeModeChanged(AppThemeMode.System) }
+                    ThemeOption(
+                        label = "Claro",
+                        icon = Icons.Default.LightMode,
+                        selected = themeMode == AppThemeMode.Light,
+                        modifier = Modifier.weight(1f)
+                    ) { onThemeModeChanged(AppThemeMode.Light) }
+                    ThemeOption(
+                        label = "Escuro",
+                        icon = Icons.Default.DarkMode,
+                        selected = themeMode == AppThemeMode.Dark,
+                        modifier = Modifier.weight(1f)
+                    ) { onThemeModeChanged(AppThemeMode.Dark) }
+                }
+            }
+        }
 
         item { AppSectionTitle("Notificações") }
         item {
@@ -151,14 +194,14 @@ fun ConfiguracoesScreen(contentPadding: PaddingValues) {
 
         item { AppSectionTitle("GitHub") }
         item {
-            AppCard(accent = CorinthiansColors.Black) {
+            AppCard(accent = CorinthiansColors.Red) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.CloudDone, null, tint = CorinthiansColors.Red)
                     Spacer(Modifier.width(10.dp))
                     Column(Modifier.weight(1f)) {
                         Text("Dados vinculados automaticamente", fontWeight = FontWeight.ExtraBold)
                         Text(
-                            "O app usa o repositório configurado e exibe todos os horários convertidos para Manaus.",
+                            "O app usa o repositório configurado e exibe os horários convertidos para Manaus.",
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -195,4 +238,29 @@ fun ConfiguracoesScreen(contentPadding: PaddingValues) {
             }
         }
     }
+}
+
+@Composable
+private fun ThemeOption(
+    label: String,
+    icon: ImageVector,
+    selected: Boolean,
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
+    FilterChip(
+        modifier = modifier,
+        selected = selected,
+        onClick = onClick,
+        leadingIcon = { Icon(icon, null) },
+        label = { Text(label, fontWeight = FontWeight.ExtraBold) },
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            selectedLeadingIconColor = MaterialTheme.colorScheme.primary
+        )
+    )
 }

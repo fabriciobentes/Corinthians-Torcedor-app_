@@ -16,9 +16,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.LiveTv
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,8 +38,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.fabricio.corinthianslive.data.AppSettings
 import com.fabricio.corinthianslive.data.CorinthiansRepository
@@ -70,11 +82,8 @@ fun JogosScreen(contentPadding: PaddingValues) {
     }
     val result = state?.getOrNull()
     val allMatches = result?.data.orEmpty()
-    val competitions = allMatches
-        .filter { !hideFriendlies || !it.isFriendly }
-        .map { it.competition }
-        .distinct()
-        .sorted()
+    val competitions = allMatches.filter { !hideFriendlies || !it.isFriendly }
+        .map { it.competition }.distinct().sorted()
     val visibleMatches = allMatches.filter { match ->
         (!hideFriendlies || !match.isFriendly) &&
             (selectedCompetitions.isEmpty() || match.competition in selectedCompetitions)
@@ -89,55 +98,40 @@ fun JogosScreen(contentPadding: PaddingValues) {
     val datedUpcoming = upcoming.map { it to it.kickoffAtManaus()?.toLocalDate() }
     val todayGames = datedUpcoming.filter { it.second == today }.map { it.first }
     val tomorrowGames = datedUpcoming.filter { it.second == tomorrow }.map { it.first }
-    val weekGames = datedUpcoming
-        .filter { (_, date) -> date != null && date > tomorrow && date <= weekEnd }
-        .map { it.first }
-    val monthGames = datedUpcoming
-        .filter { (_, date) -> date != null && date > weekEnd && date.year == today.year && date.month == today.month }
-        .map { it.first }
-    val laterGames = datedUpcoming
-        .filter { (_, date) -> date == null || (date > weekEnd && (date.year != today.year || date.month != today.month)) }
-        .map { it.first }
+    val weekGames = datedUpcoming.filter { (_, date) -> date != null && date > tomorrow && date <= weekEnd }.map { it.first }
+    val monthGames = datedUpcoming.filter { (_, date) ->
+        date != null && date > weekEnd && date.year == today.year && date.month == today.month
+    }.map { it.first }
+    val laterGames = datedUpcoming.filter { (_, date) ->
+        date == null || (date > weekEnd && (date.year != today.year || date.month != today.month))
+    }.map { it.first }
 
     LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding(),
-            bottom = contentPadding.calculateBottomPadding() + 18.dp
-        )
+        contentPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding() + 18.dp)
     ) {
-        item { CorinthiansTopBar("Jogos", "Horários de Manaus e onde assistir", onRefresh = { refresh++ }) }
+        item { CorinthiansTopBar("Jogos", "Agenda completa • horário de Manaus • onde assistir", onRefresh = { refresh++ }) }
         if (result != null) item { DataStatus(result.source, result.generatedAt, result.notice, result.isDemo) }
 
         when {
             state == null -> item { LoadingState() }
             state?.isFailure == true -> item {
-                EmptyState(
-                    "Não foi possível carregar",
-                    state?.exceptionOrNull()?.message ?: "Verifique a conexão.",
-                    onRetry = { refresh++ }
-                )
+                EmptyState("Não foi possível carregar", state?.exceptionOrNull()?.message ?: "Verifique a conexão.", onRetry = { refresh++ })
             }
             allMatches.isEmpty() -> item {
-                EmptyState(
-                    "Nenhum jogo encontrado",
-                    "A fonte ainda não publicou partidas para esta temporada.",
-                    onRetry = { refresh++ }
-                )
+                EmptyState("Nenhum jogo encontrado", "A fonte ainda não publicou partidas para esta temporada.", onRetry = { refresh++ })
             }
             else -> {
                 item {
                     CompetitionFilters(
-                        competitions = competitions,
-                        selected = selectedCompetitions,
-                        hideFriendlies = hideFriendlies,
+                        competitions,
+                        selectedCompetitions,
+                        hideFriendlies,
                         onSelect = { competition ->
-                            selectedCompetitions = if (competition == null) {
-                                emptySet()
-                            } else if (competition in selectedCompetitions) {
-                                selectedCompetitions - competition
-                            } else {
-                                selectedCompetitions + competition
+                            selectedCompetitions = when {
+                                competition == null -> emptySet()
+                                competition in selectedCompetitions -> selectedCompetitions - competition
+                                else -> selectedCompetitions + competition
                             }
                         },
                         onFriendliesChanged = { hidden ->
@@ -157,39 +151,38 @@ fun JogosScreen(contentPadding: PaddingValues) {
                 }
                 if (todayGames.isNotEmpty()) {
                     item { AppSectionTitle(sectionTitle("Hoje tem Corinthians", todayGames.size)) }
-                    itemsIndexed(todayGames, key = { index, match -> "today-${match.id}-${index}" }) { _, match ->
+                    itemsIndexed(todayGames, key = { index, match -> "today-${match.id}-$index" }) { _, match ->
                         MatchCard(match, countdownLabel(match, today), now)
                     }
                 }
                 if (tomorrowGames.isNotEmpty()) {
                     item { AppSectionTitle(sectionTitle("Amanhã", tomorrowGames.size)) }
-                    itemsIndexed(tomorrowGames, key = { index, match -> "tomorrow-${match.id}-${index}" }) { _, match ->
+                    itemsIndexed(tomorrowGames, key = { index, match -> "tomorrow-${match.id}-$index" }) { _, match ->
                         MatchCard(match, "Amanhã é jogo", now)
                     }
                 }
                 if (weekGames.isNotEmpty()) {
                     item { AppSectionTitle(sectionTitle("Nesta semana", weekGames.size)) }
-                    itemsIndexed(weekGames, key = { index, match -> "week-${match.id}-${index}" }) { _, match ->
+                    itemsIndexed(weekGames, key = { index, match -> "week-${match.id}-$index" }) { _, match ->
                         MatchCard(match, countdownLabel(match, today), now)
                     }
                 }
                 if (monthGames.isNotEmpty()) {
-                    val monthName = today.month.getDisplayName(TextStyle.FULL, ptBr)
-                        .replaceFirstChar { it.uppercase(ptBr) }
+                    val monthName = today.month.getDisplayName(TextStyle.FULL, ptBr).replaceFirstChar { it.uppercase(ptBr) }
                     item { AppSectionTitle(sectionTitle("Ainda em $monthName", monthGames.size)) }
-                    itemsIndexed(monthGames, key = { index, match -> "month-${match.id}-${index}" }) { _, match ->
+                    itemsIndexed(monthGames, key = { index, match -> "month-${match.id}-$index" }) { _, match ->
                         MatchCard(match, countdownLabel(match, today), now)
                     }
                 }
                 if (laterGames.isNotEmpty()) {
                     item { AppSectionTitle(sectionTitle("Próximos meses", laterGames.size)) }
-                    itemsIndexed(laterGames, key = { index, match -> "later-${match.id}-${index}" }) { _, match ->
+                    itemsIndexed(laterGames, key = { index, match -> "later-${match.id}-$index" }) { _, match ->
                         MatchCard(match, countdownLabel(match, today), now)
                     }
                 }
                 if (finished.isNotEmpty()) {
                     item { AppSectionTitle("Últimos resultados") }
-                    itemsIndexed(finished, key = { index, match -> "last-${match.id}-${index}" }) { _, match ->
+                    itemsIndexed(finished, key = { index, match -> "last-${match.id}-$index" }) { _, match ->
                         MatchCard(match, null, now)
                     }
                 }
@@ -206,121 +199,145 @@ private fun CompetitionFilters(
     onSelect: (String?) -> Unit,
     onFriendliesChanged: (Boolean) -> Unit
 ) {
-    Column(Modifier.fillMaxWidth().padding(top = 10.dp)) {
-        Text(
-            "Filtrar competições",
-            modifier = Modifier.padding(horizontal = 16.dp),
-            fontWeight = FontWeight.ExtraBold,
-            style = MaterialTheme.typography.titleMedium
-        )
-        Row(
-            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            FilterChip(
-                selected = selected.isEmpty(),
-                onClick = { onSelect(null) },
-                label = { Text("Todas") }
+    Column(Modifier.padding(top = 12.dp)) {
+        AppCard(accent = CorinthiansColors.Gold) {
+            Text("PERSONALIZE SUA AGENDA", color = CorinthiansColors.Gold, style = MaterialTheme.typography.labelSmall)
+            Spacer(Modifier.height(4.dp))
+            Text("Competições", style = MaterialTheme.typography.titleLarge)
+            Text(
+                "Selecione uma ou várias competições.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall
             )
-            competitions.forEach { competition ->
-                FilterChip(
-                    selected = competition in selected,
-                    onClick = { onSelect(competition) },
-                    label = { Text(competition) }
+            Row(
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                CompetitionChip("Todas", selected.isEmpty()) { onSelect(null) }
+                competitions.forEach { competition ->
+                    CompetitionChip(competition, competition in selected) { onSelect(competition) }
+                }
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Spacer(Modifier.height(12.dp))
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Ocultar amistosos", fontWeight = FontWeight.ExtraBold)
+                    Text(
+                        "Filtro global para jogos, tabelas e estatísticas.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+                Switch(
+                    checked = hideFriendlies,
+                    onCheckedChange = onFriendliesChanged,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = CorinthiansColors.Red,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        uncheckedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                    )
                 )
             }
-        }
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text("Ocultar amistosos", fontWeight = FontWeight.Bold)
-                Text(
-                    "Aplica também às tabelas e estatísticas.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-            Switch(checked = hideFriendlies, onCheckedChange = onFriendliesChanged)
         }
     }
 }
 
 @Composable
+private fun CompetitionChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = { Text(label, fontWeight = FontWeight.ExtraBold) },
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    )
+}
+
+@Composable
 private fun MatchCard(match: Match, countdown: String?, now: ZonedDateTime) {
     val status = match.resolvedStatus(now)
-    AppCard(accent = if (status == "LIVE") CorinthiansColors.Red else CorinthiansColors.Black) {
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top
-        ) {
+    val live = status == "LIVE"
+    AppCard(accent = if (live) CorinthiansColors.Red else CorinthiansColors.Gold) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top) {
             Column(Modifier.weight(1f)) {
-                Text(match.competition, color = CorinthiansColors.Red, fontWeight = FontWeight.ExtraBold)
+                Text(match.competition.uppercase(), color = CorinthiansColors.Red, style = MaterialTheme.typography.labelLarge)
                 if (match.round.isNotBlank()) {
-                    Text(match.round, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
+                    Text(match.round, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                 }
             }
-            Spacer(Modifier.width(8.dp))
-            Column(horizontalAlignment = Alignment.End) {
-                if (status == "LIVE" || status == "AWAITING_RESULT") {
-                    Pill(
-                        match.resolvedStatusLabel(now),
-                        CorinthiansColors.Red,
-                        CorinthiansColors.White
-                    )
-                    Spacer(Modifier.height(7.dp))
-                } else if (countdown != null) {
-                    Pill(countdown, CorinthiansColors.Red.copy(alpha = .14f), CorinthiansColors.Red)
-                    Spacer(Modifier.height(7.dp))
-                }
-                val displayTime = if (match.time == "--:--") "horário a definir" else match.time
-                Pill(
-                    "${match.date} • $displayTime",
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = .08f),
-                    MaterialTheme.colorScheme.onSurface
-                )
+            Spacer(Modifier.width(10.dp))
+            when {
+                live || status == "AWAITING_RESULT" -> Pill(match.resolvedStatusLabel(now), CorinthiansColors.Red, Color.White)
+                countdown != null -> Pill(countdown, MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
         Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(17.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant).padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Icon(Icons.Default.CalendarMonth, null, tint = CorinthiansColors.Gold, modifier = Modifier.width(20.dp))
+            Spacer(Modifier.width(8.dp))
+            val displayTime = if (match.time == "--:--") "horário a definir" else match.time
+            Text("${match.date} • $displayTime", fontWeight = FontWeight.ExtraBold, modifier = Modifier.weight(1f))
+            if (live) Pill("AO VIVO", CorinthiansColors.Red, Color.White)
+        }
+        Spacer(Modifier.height(20.dp))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             TeamBlock(match.home, match.home.equals("Corinthians", true), false, Modifier.weight(1f))
-            Column(Modifier.padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.width(76.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 val score = if (match.scoreHome != null && match.scoreAway != null) {
-                    "${match.scoreHome}  x  ${match.scoreAway}"
+                    "${match.scoreHome} × ${match.scoreAway}"
                 } else {
-                    "vs"
+                    "VS"
                 }
-                Text(score, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(6.dp))
-                Box(Modifier.height(2.dp).width(44.dp).background(CorinthiansColors.Red))
+                Text(score, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
+                Spacer(Modifier.height(7.dp))
+                Box(Modifier.width(48.dp).height(3.dp).clip(RoundedCornerShape(3.dp)).background(CorinthiansColors.Red))
             }
             TeamBlock(match.away, match.away.equals("Corinthians", true), true, Modifier.weight(1f))
         }
-        Spacer(Modifier.height(14.dp))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            InfoItem("Estádio", match.stadium, Modifier.weight(1f))
+        Spacer(Modifier.height(20.dp))
+        Row(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(17.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant).padding(13.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(Icons.Default.LocationOn, null, tint = CorinthiansColors.Red)
+            Spacer(Modifier.width(9.dp))
+            InfoItem("Estádio", match.stadium, Modifier.weight(1.35f))
             Spacer(Modifier.width(12.dp))
-            InfoItem("Cidade", match.city.ifBlank { "A confirmar" }, Modifier.weight(1f), true)
+            InfoItem("Cidade", match.city.ifBlank { "A confirmar" }, Modifier.weight(.75f), true)
         }
         Spacer(Modifier.height(12.dp))
-        Text(
-            "Onde assistir",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            match.broadcasters.joinToString(" • ").ifBlank { "Transmissão ainda não informada" },
-            fontWeight = FontWeight.SemiBold,
-            color = if (match.broadcasters.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
-        )
+        Row(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(17.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer).padding(13.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                Modifier.width(38.dp).height(38.dp).clip(RoundedCornerShape(12.dp)).background(CorinthiansColors.Red),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.LiveTv, null, tint = Color.White)
+            }
+            Spacer(Modifier.width(11.dp))
+            Column(Modifier.weight(1f)) {
+                Text("ONDE ASSISTIR", color = CorinthiansColors.Red, style = MaterialTheme.typography.labelSmall)
+                Text(
+                    match.broadcasters.joinToString(" • ").ifBlank { "Transmissão ainda não informada" },
+                    fontWeight = FontWeight.ExtraBold,
+                    color = if (match.broadcasters.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
     }
 }
 

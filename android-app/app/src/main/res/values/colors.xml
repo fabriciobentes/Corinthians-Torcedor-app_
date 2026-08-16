@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="corinthians_red">#FFE30613</color>
-    <color name="corinthians_black">#FF0B0B0D</color>
+    <color name="corinthians_red">#FFF20D2F</color>
+    <color name="corinthians_black">#FF08090B</color>
+    <color name="corinthians_dark_background">#FF07080A</color>
 </resources>

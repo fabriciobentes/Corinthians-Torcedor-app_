@@ -1,6 +1,7 @@
 package com.fabricio.corinthianslive.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.material.icons.filled.Style
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +36,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,17 +51,17 @@ import com.fabricio.corinthianslive.data.model.DetailedMatchStats
 import com.fabricio.corinthianslive.data.model.EventType
 import com.fabricio.corinthianslive.data.model.Match
 import com.fabricio.corinthianslive.data.model.RepositoryResult
-import com.fabricio.corinthianslive.data.model.TeamMatchStats
 import com.fabricio.corinthianslive.data.model.TeamStats
 import com.fabricio.corinthianslive.ui.components.AppCard
 import com.fabricio.corinthianslive.ui.components.AppSectionTitle
+import com.fabricio.corinthianslive.ui.components.CompactEventRow
+import com.fabricio.corinthianslive.ui.components.ComparisonStat
 import com.fabricio.corinthianslive.ui.components.CorinthiansTopBar
 import com.fabricio.corinthianslive.ui.components.DataStatus
 import com.fabricio.corinthianslive.ui.components.EmptyState
 import com.fabricio.corinthianslive.ui.components.LoadingState
 import com.fabricio.corinthianslive.ui.components.Pill
 import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
-import java.util.Locale
 
 @Composable
 fun EstatisticasScreen(contentPadding: PaddingValues) {
@@ -68,76 +80,31 @@ fun EstatisticasScreen(contentPadding: PaddingValues) {
 
     LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            top = contentPadding.calculateTopPadding(),
-            bottom = contentPadding.calculateBottomPadding() + 18.dp
-        )
+        contentPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding() + 18.dp)
     ) {
-        item { CorinthiansTopBar("Estatísticas", "Números e autores dos lances", onRefresh = { refresh++ }) }
+        item { CorinthiansTopBar("Estatísticas", "Desempenho, comparativos e protagonistas", onRefresh = { refresh++ }) }
         if (result != null) item { DataStatus(result.source, result.generatedAt, result.notice, result.isDemo) }
         when {
             state == null -> item { LoadingState() }
             state?.isFailure == true -> item {
-                EmptyState(
-                    "Estatísticas indisponíveis",
-                    state?.exceptionOrNull()?.message ?: "Verifique a conexão.",
-                    onRetry = { refresh++ }
-                )
+                EmptyState("Estatísticas indisponíveis", state?.exceptionOrNull()?.message ?: "Verifique a conexão.", onRetry = { refresh++ })
             }
             stats == null || matches.isEmpty() -> item {
-                EmptyState(
-                    "Sem jogos suficientes",
-                    "As estatísticas aparecerão após os primeiros resultados.",
-                    onRetry = { refresh++ }
-                )
+                EmptyState("Sem jogos suficientes", "As estatísticas aparecerão após os primeiros resultados.", onRetry = { refresh++ })
             }
             else -> {
-                item { AppSectionTitle("Resumo dos últimos ${matches.size} jogos") }
-                item {
-                    AppCard(accent = CorinthiansColors.Red) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text(
-                                    "Campanha",
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    "${summary.wins}V  •  ${summary.draws}E  •  ${summary.losses}D",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Black
-                                )
-                            }
-                            Pill("${summary.pointsPercentage}%", CorinthiansColors.Red.copy(alpha = .14f), CorinthiansColors.Red)
-                        }
-                        Spacer(Modifier.height(18.dp))
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            MetricTile("Gols pró", summary.goalsFor.toString(), Modifier.weight(1f))
-                            MetricTile("Gols contra", summary.goalsAgainst.toString(), Modifier.weight(1f))
-                            MetricTile("Saldo", signed(summary.goalsFor - summary.goalsAgainst), Modifier.weight(1f))
-                        }
-                        Spacer(Modifier.height(10.dp))
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            summary.form.forEach { FormBadge(it) }
-                        }
-                    }
-                }
+                item { AppSectionTitle("Raio-X dos últimos ${matches.size} jogos") }
+                item { PerformanceOverview(summary) }
 
                 val visibleCompetitions = stats.competitions.filter {
                     !hideFriendlies || !it.name.contains("amist", ignoreCase = true)
                 }
                 if (visibleCompetitions.isNotEmpty()) {
-                    item { AppSectionTitle("Por competição") }
-                    items(visibleCompetitions, key = { it.name }) { competition ->
-                        CompetitionStatsCard(competition)
-                    }
+                    item { AppSectionTitle("Desempenho por competição") }
+                    items(visibleCompetitions, key = { it.name }) { competition -> CompetitionStatsCard(competition) }
                 }
 
-                item { AppSectionTitle("Estatísticas por partida") }
+                item { AppSectionTitle("Partida por partida") }
                 if (details.isEmpty()) {
                     items(matches.asReversed(), key = { it.id }) { match -> RecentResultCard(match) }
                 } else {
@@ -149,64 +116,107 @@ fun EstatisticasScreen(contentPadding: PaddingValues) {
 }
 
 @Composable
-private fun MetricTile(label: String, value: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier.clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(value, fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleLarge)
-        Text(
-            label,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.labelSmall,
-            textAlign = TextAlign.Center,
-            maxLines = 1
-        )
+private fun PerformanceOverview(summary: VisibleSummary) {
+    AppCard(accent = CorinthiansColors.Gold) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier.size(56.dp).clip(RoundedCornerShape(18.dp))
+                    .background(Brush.linearGradient(listOf(CorinthiansColors.Red, CorinthiansColors.DeepRed))),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.EmojiEvents, null, tint = Color.White, modifier = Modifier.size(29.dp))
+            }
+            Spacer(Modifier.width(13.dp))
+            Column(Modifier.weight(1f)) {
+                Text("APROVEITAMENTO", color = CorinthiansColors.Gold, style = MaterialTheme.typography.labelSmall)
+                Text("${summary.pointsPercentage}%", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black)
+            }
+            Pill("${summary.wins}V • ${summary.draws}E • ${summary.losses}D", MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
+        }
+        Spacer(Modifier.height(18.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            MetricTile("Gols pró", summary.goalsFor.toString(), CorinthiansColors.Success, Modifier.weight(1f))
+            MetricTile("Gols contra", summary.goalsAgainst.toString(), CorinthiansColors.Red, Modifier.weight(1f))
+            MetricTile("Saldo", signed(summary.goalsFor - summary.goalsAgainst), CorinthiansColors.Gold, Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(16.dp))
+        Text("SEQUÊNCIA RECENTE", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
+        Spacer(Modifier.height(9.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            summary.form.forEachIndexed { index, code -> FormBadge(code, index + 1) }
+        }
     }
 }
 
 @Composable
-private fun FormBadge(code: String) {
+private fun MetricTile(label: String, value: String, accent: Color, modifier: Modifier = Modifier) {
+    Column(
+        modifier.clip(RoundedCornerShape(17.dp)).background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(1.dp, accent.copy(alpha = .2f), RoundedCornerShape(17.dp))
+            .padding(horizontal = 8.dp, vertical = 13.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(value, color = accent, fontWeight = FontWeight.Black, style = MaterialTheme.typography.headlineSmall)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+private fun FormBadge(code: String, index: Int) {
     val (label, color) = when (code) {
-        "W" -> "V" to Color(0xFF198754)
-        "D" -> "E" to Color(0xFFD18A00)
+        "W" -> "V" to CorinthiansColors.Success
+        "D" -> "E" to CorinthiansColors.Yellow
         else -> "D" to CorinthiansColors.Red
     }
-    Box(
-        Modifier.size(28.dp).clip(RoundedCornerShape(8.dp)).background(color),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(label, color = Color.White, fontWeight = FontWeight.Black, style = MaterialTheme.typography.labelMedium)
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            Modifier.size(34.dp).clip(CircleShape).background(color.copy(alpha = .16f))
+                .border(1.dp, color.copy(alpha = .55f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(label, color = color, fontWeight = FontWeight.Black, style = MaterialTheme.typography.labelLarge)
+        }
+        Text(index.toString(), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 private fun CompetitionStatsCard(stats: CompetitionStats) {
+    val percentage = if (stats.matches == 0) 0 else ((stats.wins * 3 + stats.draws) * 100) / (stats.matches * 3)
     AppCard(accent = CorinthiansColors.Red) {
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                stats.name,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.weight(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                "${stats.matches} jogos",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium
-            )
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier.size(44.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.EmojiEvents, null, tint = CorinthiansColors.Red)
+            }
+            Spacer(Modifier.width(11.dp))
+            Column(Modifier.weight(1f)) {
+                Text(stats.name, fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("${stats.matches} jogos", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+            }
+            Text("$percentage%", color = CorinthiansColors.Gold, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
         }
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "${stats.wins}V • ${stats.draws}E • ${stats.losses}D   |   Gols ${stats.goalsFor}–${stats.goalsAgainst}",
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(Modifier.height(14.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            MiniMetric("Vitórias", stats.wins, CorinthiansColors.Success, Modifier.weight(1f))
+            MiniMetric("Empates", stats.draws, CorinthiansColors.Yellow, Modifier.weight(1f))
+            MiniMetric("Derrotas", stats.losses, CorinthiansColors.Red, Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(12.dp))
+        Text("Gols ${stats.goalsFor} × ${stats.goalsAgainst}", color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+private fun MiniMetric(label: String, value: Int, color: Color, modifier: Modifier) {
+    Column(
+        modifier.clip(RoundedCornerShape(14.dp)).background(color.copy(alpha = .08f)).padding(vertical = 9.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(value.toString(), color = color, fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleMedium)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -214,85 +224,108 @@ private fun CompetitionStatsCard(stats: CompetitionStats) {
 private fun DetailedGameCard(detail: DetailedMatchStats) {
     val match = detail.match
     val importantEvents = detail.events.filter {
-        it.type in setOf(
-            EventType.Goal,
-            EventType.YellowCard,
-            EventType.RedCard,
-            EventType.Substitution,
-            EventType.Penalty
-        )
+        it.type in setOf(EventType.Goal, EventType.YellowCard, EventType.RedCard, EventType.Substitution, EventType.Penalty)
     }
+    val goals = importantEvents.count { it.type == EventType.Goal || it.type == EventType.Penalty }
+    val cards = importantEvents.count { it.type == EventType.YellowCard || it.type == EventType.RedCard }
+    val substitutions = importantEvents.count { it.type == EventType.Substitution }
+    val homeIsCorinthians = match.home.contains("Corinthians", true)
+
     AppCard(accent = CorinthiansColors.Red) {
-        Text(match.competition, color = CorinthiansColors.Red, fontWeight = FontWeight.ExtraBold)
-        Text(
-            "${match.home}  ${match.scoreHome ?: "–"} x ${match.scoreAway ?: "–"}  ${match.away}",
-            fontWeight = FontWeight.Black,
-            style = MaterialTheme.typography.titleMedium
-        )
-        Text(
-            match.date,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.labelMedium
-        )
-
-        if (detail.homeStats != null && detail.awayStats != null) {
-            Spacer(Modifier.height(14.dp))
-            ComparisonLine("Chutes no gol", detail.homeStats.shotsOnGoal, detail.awayStats.shotsOnGoal)
-            ComparisonLine("Chutes para fora", detail.homeStats.shotsOffGoal, detail.awayStats.shotsOffGoal)
-            ComparisonLine("Chutes bloqueados", detail.homeStats.blockedShots, detail.awayStats.blockedShots)
-            ComparisonLine("Posse", detail.homeStats.ballPossession, detail.awayStats.ballPossession, "%")
-            ComparisonLine("Faltas", detail.homeStats.fouls, detail.awayStats.fouls)
-            ComparisonLine("Escanteios", detail.homeStats.corners, detail.awayStats.corners)
-            ComparisonLine("Impedimentos", detail.homeStats.offsides, detail.awayStats.offsides)
-            ComparisonLine("Defesas", detail.homeStats.saves, detail.awayStats.saves)
-            ComparisonLine("Cartões amarelos", detail.homeStats.yellowCards, detail.awayStats.yellowCards)
-            ComparisonLine("Cartões vermelhos", detail.homeStats.redCards, detail.awayStats.redCards)
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(match.competition.uppercase(), color = CorinthiansColors.Red, style = MaterialTheme.typography.labelSmall)
+                Text(match.date, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+            }
+            Pill("ENCERRADO", MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
         }
-
-        Spacer(Modifier.height(14.dp))
-        Text("Gols, cartões e substituições", fontWeight = FontWeight.ExtraBold)
-        if (importantEvents.isEmpty()) {
-            Text(
-                "Nenhum lance desse tipo foi registrado.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodySmall
-            )
-        } else {
-            importantEvents.forEach { event ->
+        Spacer(Modifier.height(16.dp))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(match.home, modifier = Modifier.weight(1f), fontWeight = if (homeIsCorinthians) FontWeight.Black else FontWeight.Bold)
+            Box(
+                Modifier.clip(RoundedCornerShape(15.dp)).background(MaterialTheme.colorScheme.background).padding(horizontal = 15.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    "${event.clock.ifBlank { event.minute.toString() }} ${event.period} • ${event.team.ifBlank { "Jogo" }} — ${event.description}",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(top = 5.dp)
+                    "${match.scoreHome ?: "–"}  ×  ${match.scoreAway ?: "–"}",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Black
                 )
             }
+            Text(
+                match.away,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End,
+                fontWeight = if (!homeIsCorinthians) FontWeight.Black else FontWeight.Bold
+            )
+        }
+
+        if (detail.homeStats != null && detail.awayStats != null) {
+            Spacer(Modifier.height(20.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Spacer(Modifier.height(15.dp))
+            Text("COMPARATIVO DA PARTIDA", color = CorinthiansColors.Gold, style = MaterialTheme.typography.labelSmall)
+            Spacer(Modifier.height(5.dp))
+            ComparisonStat("Chutes no gol", detail.homeStats.shotsOnGoal, detail.awayStats.shotsOnGoal, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Chutes para fora", detail.homeStats.shotsOffGoal, detail.awayStats.shotsOffGoal, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Chutes bloqueados", detail.homeStats.blockedShots, detail.awayStats.blockedShots, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Posse de bola", detail.homeStats.ballPossession, detail.awayStats.ballPossession, "%", homeIsCorinthians)
+            ComparisonStat("Faltas", detail.homeStats.fouls, detail.awayStats.fouls, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Escanteios", detail.homeStats.corners, detail.awayStats.corners, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Impedimentos", detail.homeStats.offsides, detail.awayStats.offsides, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Defesas", detail.homeStats.saves, detail.awayStats.saves, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Cartões amarelos", detail.homeStats.yellowCards, detail.awayStats.yellowCards, homeIsCorinthians = homeIsCorinthians)
+            ComparisonStat("Cartões vermelhos", detail.homeStats.redCards, detail.awayStats.redCards, homeIsCorinthians = homeIsCorinthians)
+        }
+
+        Spacer(Modifier.height(18.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Spacer(Modifier.height(15.dp))
+        Text("MOMENTOS DECISIVOS", color = CorinthiansColors.Gold, style = MaterialTheme.typography.labelSmall)
+        Spacer(Modifier.height(11.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            EventCount("Gols", goals, Icons.Default.SportsSoccer, CorinthiansColors.Red, Modifier.weight(1f))
+            EventCount("Cartões", cards, Icons.Default.Style, CorinthiansColors.Yellow, Modifier.weight(1f))
+            EventCount("Trocas", substitutions, Icons.Default.SwapHoriz, Color(0xFF5F9CFF), Modifier.weight(1f))
+        }
+        if (importantEvents.isEmpty()) {
+            Text(
+                "Nenhum gol, cartão ou substituição foi registrado.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 12.dp)
+            )
+        } else {
+            importantEvents.forEach { event -> CompactEventRow(event) }
         }
     }
 }
 
 @Composable
-private fun ComparisonLine(label: String, home: Int, away: Int, suffix: String = "") {
-    Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("$home$suffix", Modifier.weight(1f), fontWeight = FontWeight.Black)
-        Text(
-            label,
-            Modifier.weight(2f),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodySmall
-        )
-        Text("$away$suffix", Modifier.weight(1f), textAlign = TextAlign.End, fontWeight = FontWeight.Black)
+private fun EventCount(label: String, value: Int, icon: ImageVector, color: Color, modifier: Modifier) {
+    Column(
+        modifier.clip(RoundedCornerShape(15.dp)).background(color.copy(alpha = .08f))
+            .border(1.dp, color.copy(alpha = .16f), RoundedCornerShape(15.dp)).padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(icon, null, tint = color, modifier = Modifier.size(19.dp))
+        Text(value.toString(), color = color, fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleMedium)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 private fun RecentResultCard(match: Match) {
-    AppCard(accent = CorinthiansColors.Black) {
-        Text(match.competition, color = CorinthiansColors.Red, fontWeight = FontWeight.Bold)
-        Text(
-            "${match.home}  ${match.scoreHome ?: "–"} x ${match.scoreAway ?: "–"}  ${match.away}",
-            fontWeight = FontWeight.Bold
-        )
+    val homeIsCorinthians = match.home.contains("Corinthians", true)
+    AppCard(accent = MaterialTheme.colorScheme.outlineVariant) {
+        Text(match.competition.uppercase(), color = CorinthiansColors.Red, style = MaterialTheme.typography.labelSmall)
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(match.home, Modifier.weight(1f), fontWeight = if (homeIsCorinthians) FontWeight.Black else FontWeight.Bold)
+            Pill("${match.scoreHome ?: "–"} × ${match.scoreAway ?: "–"}", MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.onBackground)
+            Text(match.away, Modifier.weight(1f), textAlign = TextAlign.End, fontWeight = if (!homeIsCorinthians) FontWeight.Black else FontWeight.Bold)
+        }
+        Spacer(Modifier.height(7.dp))
         Text(match.date, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
     }
 }
