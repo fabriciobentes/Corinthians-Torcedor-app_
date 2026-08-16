@@ -26,10 +26,18 @@ data class CompetitionStats(
     val goalsAgainst: Int
 )
 
+data class DetailedMatchStats(
+    val match: Match,
+    val homeStats: TeamMatchStats?,
+    val awayStats: TeamMatchStats?,
+    val events: List<MatchEvent>
+)
+
 data class TeamStats(
     val window: Int,
     val summary: StatsSummary,
     val form: List<String>,
     val competitions: List<CompetitionStats>,
-    val recentMatches: List<Match>
+    val recentMatches: List<Match>,
+    val matchDetails: List<DetailedMatchStats> = emptyList()
 )

@@ -79,12 +79,49 @@ import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
 }
 
 @Composable fun EventCard(event: MatchEvent) {
-    val icon = when (event.type) { EventType.Goal -> Icons.Default.SportsSoccer; EventType.YellowCard, EventType.RedCard -> Icons.Default.Style; EventType.Substitution -> Icons.Default.SwapHoriz; EventType.Var -> Icons.Default.LiveTv; EventType.Kickoff -> Icons.Default.Flag }
-    val color = when (event.type) { EventType.Goal, EventType.RedCard -> CorinthiansColors.Red; EventType.YellowCard -> CorinthiansColors.Yellow; else -> CorinthiansColors.Black }
-    Card(Modifier.padding(horizontal = 16.dp, vertical = 5.dp).fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+    val icon = when (event.type) {
+        EventType.Goal, EventType.Shot, EventType.Penalty -> Icons.Default.SportsSoccer
+        EventType.YellowCard, EventType.RedCard -> Icons.Default.Style
+        EventType.Substitution -> Icons.Default.SwapHoriz
+        EventType.Var -> Icons.Default.LiveTv
+        EventType.Kickoff, EventType.Corner -> Icons.Default.Flag
+        EventType.Foul -> Icons.Default.Warning
+        EventType.Offside -> Icons.Default.SyncAlt
+        EventType.Save -> Icons.Default.PanTool
+        EventType.Other -> Icons.Default.Timeline
+    }
+    val color = when (event.type) {
+        EventType.Goal, EventType.RedCard, EventType.Penalty -> CorinthiansColors.Red
+        EventType.YellowCard -> CorinthiansColors.Yellow
+        EventType.Shot, EventType.Save -> Color(0xFF198754)
+        else -> CorinthiansColors.Black
+    }
+    val clock = listOf(event.clock.ifBlank { event.minute.toString() }, event.period)
+        .filter { it.isNotBlank() }
+        .joinToString(" ")
+    Card(
+        Modifier.padding(horizontal = 16.dp, vertical = 5.dp).fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(42.dp).clip(RoundedCornerShape(12.dp)).background(color.copy(alpha = .12f)), contentAlignment = Alignment.Center) { Icon(icon, null, tint = color) }
-            Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text("${event.minute}' • ${event.team}", fontWeight = FontWeight.ExtraBold); Text(event.description, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium) }
+            Box(
+                Modifier.size(42.dp).clip(RoundedCornerShape(12.dp)).background(color.copy(alpha = .12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, null, tint = color)
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    listOf(clock, event.team).filter { it.isNotBlank() }.joinToString(" • "),
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Text(
+                    event.description,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

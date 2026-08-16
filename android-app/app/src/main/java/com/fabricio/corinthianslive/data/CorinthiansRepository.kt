@@ -1,11 +1,30 @@
 package com.fabricio.corinthianslive.data
 
 import android.content.Context
-import com.fabricio.corinthianslive.BuildConfig
 import com.fabricio.corinthianslive.data.mock.MockRepository
-import com.fabricio.corinthianslive.data.model.*
+import com.fabricio.corinthianslive.data.model.APP_ZONE_ID
+import com.fabricio.corinthianslive.data.model.BracketGame
+import com.fabricio.corinthianslive.data.model.BracketRound
+import com.fabricio.corinthianslive.data.model.BracketTie
+import com.fabricio.corinthianslive.data.model.CompetitionStats
+import com.fabricio.corinthianslive.data.model.CompetitionTable
+import com.fabricio.corinthianslive.data.model.DetailedMatchStats
+import com.fabricio.corinthianslive.data.model.EventType
+import com.fabricio.corinthianslive.data.model.LiveContent
+import com.fabricio.corinthianslive.data.model.LiveMatch
+import com.fabricio.corinthianslive.data.model.Match
+import com.fabricio.corinthianslive.data.model.MatchEvent
+import com.fabricio.corinthianslive.data.model.Player
+import com.fabricio.corinthianslive.data.model.RepositoryResult
+import com.fabricio.corinthianslive.data.model.Standing
+import com.fabricio.corinthianslive.data.model.StandingGroup
+import com.fabricio.corinthianslive.data.model.StatsSummary
+import com.fabricio.corinthianslive.data.model.TeamMatchStats
+import com.fabricio.corinthianslive.data.model.TeamSquad
+import com.fabricio.corinthianslive.data.model.TeamStats
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -22,10 +41,7 @@ class CorinthiansRepository(private val context: Context) {
     suspend fun fixtures(): RepositoryResult<List<Match>> = withContext(Dispatchers.IO) {
         val payload = read("fixtures.json")
         val root = JSONObject(payload.text)
-        val items = root.optJSONArray("fixtures")
-        val matches = buildList {
-            if (items != null) for (index in 0 until items.length()) add(parseMatch(items.getJSONObject(index)))
-        }
+        val matches = root.optJSONArray("fixtures").mapObjects(::parseMatch)
         RepositoryResult(
             data = if (matches.isEmpty() && root.optString("source") == "demo") mock.nextMatches() else matches,
             source = root.optString("source", "desconhecida"),
@@ -38,48 +54,76 @@ class CorinthiansRepository(private val context: Context) {
         val payload = read("live.json")
         val root = JSONObject(payload.text)
         val liveItems = root.optJSONArray("liveMatches")
-        val matchJson = if (liveItems != null && liveItems.length() > 0) liveItems.getJSONObject(0) else null
-        val match = matchJson?.let {
-            val home = it.getJSONObject("home")
-            val away = it.getJSONObject("away")
-            val score = it.getJSONObject("score")
-            LiveMatch(
-                id = it.getLong("id"), competition = it.optString("competition"), stadium = it.optString("stadium", "Local a definir"),
-                home = home.optString("name"), away = away.optString("name"), scoreHome = score.optIntOrNull("home") ?: 0,
-                scoreAway = score.optIntOrNull("away") ?: 0, minute = it.optIntOrNull("minute") ?: 0
-            )
+        val matchJson = root.optJSONObject("featuredMatch")
+            ?: if (liveItems != null && liveItems.length() > 0) liveItems.optJSONObject(0) else null
+        val match = matchJson?.let(::parseLiveMatch)
+        val events = if (match == null) {
+            emptyList()
+        } else {
+            root.optJSONObject("eventsByFixture")
+                ?.optJSONArray(match.id.toString())
+                .mapObjects(::parseEvent)
         }
-        val events = buildList {
-            if (match != null) {
-                val array = root.optJSONObject("eventsByFixture")?.optJSONArray(match.id.toString())
-                if (array != null) for (index in 0 until array.length()) add(parseEvent(array.getJSONObject(index)))
-            }
-        }
-        RepositoryResult(LiveContent(match, events), root.optString("source", "desconhecida"), root.optString("generatedAt"), payload.notice)
+        val squads = matchJson?.optJSONObject("squads")
+        val statistics = matchJson?.optJSONObject("statistics")
+        RepositoryResult(
+            data = LiveContent(
+                match = match,
+                events = events.orEmpty(),
+                homeSquad = squads?.optJSONObject("homeTeam")?.let { parseSquad(it, match?.home.orEmpty()) },
+                awaySquad = squads?.optJSONObject("awayTeam")?.let { parseSquad(it, match?.away.orEmpty()) },
+                homeStats = statistics?.optJSONObject("homeTeam")?.let(::parseTeamStats),
+                awayStats = statistics?.optJSONObject("awayTeam")?.let(::parseTeamStats),
+                lineupStatus = matchJson?.optString("lineupStatus").orEmpty()
+            ),
+            source = root.optString("source", "desconhecida"),
+            generatedAt = root.optString("generatedAt"),
+            notice = payload.notice
+        )
     }
 
-    suspend fun standings(): RepositoryResult<List<Standing>> = withContext(Dispatchers.IO) {
+    suspend fun standings(): RepositoryResult<List<CompetitionTable>> = withContext(Dispatchers.IO) {
         val payload = read("standings.json")
         val root = JSONObject(payload.text)
-        val tables = root.optJSONArray("tables")
-        val first = if (tables != null && tables.length() > 0) tables.optJSONArray(0) else null
-        val rows = buildList {
-            if (first != null) for (index in 0 until first.length()) {
-                val row = first.getJSONObject(index)
-                add(Standing(row.getInt("position"), row.getString("teamName"), row.getInt("points"), row.getInt("played"), row.getInt("wins"), row.getInt("draws"), row.getInt("losses"), row.getInt("goalDifference"), row.optString("form")))
+        val competitions = root.optJSONArray("competitions").mapObjects(::parseCompetitionTable).toMutableList()
+        if (competitions.isEmpty()) {
+            val tables = root.optJSONArray("tables")
+            val first = if (tables != null && tables.length() > 0) tables.optJSONArray(0) else null
+            val rows = first.mapObjects(::parseStanding)
+            if (rows.isNotEmpty()) {
+                competitions += CompetitionTable(
+                    name = root.optJSONObject("competition")?.optString("name", "Brasileirão Série A")
+                        ?: "Brasileirão Série A",
+                    phase = "Classificação",
+                    kind = "league",
+                    groups = listOf(StandingGroup("Classificação", rows)),
+                    brackets = emptyList()
+                )
             }
         }
-        RepositoryResult(if (rows.isEmpty() && root.optString("source") == "demo") mock.standings() else rows, root.optString("source", "desconhecida"), root.optString("generatedAt"), payload.notice)
+        if (competitions.isEmpty() && root.optString("source") == "demo") {
+            competitions += CompetitionTable(
+                name = "Brasileirão Série A",
+                phase = "Classificação",
+                kind = "league",
+                groups = listOf(StandingGroup("Classificação", mock.standings())),
+                brackets = emptyList()
+            )
+        }
+        RepositoryResult(
+            data = competitions,
+            source = root.optString("source", "desconhecida"),
+            generatedAt = root.optString("generatedAt"),
+            notice = payload.notice
+        )
     }
 
     suspend fun stats(): RepositoryResult<TeamStats> = withContext(Dispatchers.IO) {
         val payload = read("stats.json")
         val root = JSONObject(payload.text)
-        val summary = root.getJSONObject("summary")
-        val competitionItems = root.optJSONArray("competitions")
-        val recentItems = root.optJSONArray("recentMatches")
-        val formItems = root.optJSONArray("form")
-
+        val summary = root.optJSONObject("summary") ?: JSONObject()
+        val recentMatches = root.optJSONArray("recentMatches").mapObjects(::parseMatch)
+        val matchesById = recentMatches.associateBy { it.id }
         val stats = TeamStats(
             window = root.optInt("window", 10),
             summary = StatsSummary(
@@ -97,74 +141,272 @@ class CorinthiansRepository(private val context: Context) {
                 averageGoalsAgainst = summary.optDouble("averageGoalsAgainst"),
                 currentStreak = summary.optString("currentStreak")
             ),
-            form = buildList {
-                if (formItems != null) for (index in 0 until formItems.length()) add(formItems.optString(index))
+            form = root.optJSONArray("form").toStringList(),
+            competitions = root.optJSONArray("competitions").mapObjects { item ->
+                CompetitionStats(
+                    name = item.optString("name"),
+                    matches = item.optInt("matches"),
+                    wins = item.optInt("wins"),
+                    draws = item.optInt("draws"),
+                    losses = item.optInt("losses"),
+                    goalsFor = item.optInt("goalsFor"),
+                    goalsAgainst = item.optInt("goalsAgainst")
+                )
             },
-            competitions = buildList {
-                if (competitionItems != null) for (index in 0 until competitionItems.length()) {
-                    val item = competitionItems.getJSONObject(index)
-                    add(
-                        CompetitionStats(
-                            name = item.optString("name"),
-                            matches = item.optInt("matches"),
-                            wins = item.optInt("wins"),
-                            draws = item.optInt("draws"),
-                            losses = item.optInt("losses"),
-                            goalsFor = item.optInt("goalsFor"),
-                            goalsAgainst = item.optInt("goalsAgainst")
-                        )
+            recentMatches = recentMatches,
+            matchDetails = root.optJSONArray("matchDetails").mapObjects { item ->
+                val matchId = item.optLong("matchId")
+                val match = matchesById[matchId]
+                if (match == null) {
+                    null
+                } else {
+                    val statistics = item.optJSONObject("statistics")
+                    DetailedMatchStats(
+                        match = match,
+                        homeStats = statistics?.optJSONObject("homeTeam")?.let(::parseTeamStats),
+                        awayStats = statistics?.optJSONObject("awayTeam")?.let(::parseTeamStats),
+                        events = item.optJSONArray("events").mapObjects(::parseEvent)
                     )
                 }
-            },
-            recentMatches = buildList {
-                if (recentItems != null) for (index in 0 until recentItems.length()) add(parseMatch(recentItems.getJSONObject(index)))
             }
         )
-        RepositoryResult(stats, root.optString("source", "desconhecida"), root.optString("generatedAt"), payload.notice)
+        RepositoryResult(
+            data = stats,
+            source = root.optString("source", "desconhecida"),
+            generatedAt = root.optString("generatedAt"),
+            notice = payload.notice
+        )
+    }
+
+    suspend fun testConnection(): String = withContext(Dispatchers.IO) {
+        val base = DataSettings.getBaseUrl(context)
+        val connection = openConnection(base + "/fixtures.json?connectionTest=" + System.currentTimeMillis())
+        try {
+            val code = connection.responseCode
+            if (code !in 200..299) error("GitHub respondeu com o código " + code + ".")
+            val root = connection.inputStream.bufferedReader(Charsets.UTF_8).use { JSONObject(it.readText()) }
+            if (root.optJSONArray("fixtures") == null) error("O arquivo de jogos não está no formato esperado.")
+            if (root.optString("generatedAt").isBlank()) {
+                "Conexão com o GitHub funcionando."
+            } else {
+                "Conexão com o GitHub funcionando. Dados encontrados."
+            }
+        } finally {
+            connection.disconnect()
+        }
     }
 
     private fun parseMatch(item: JSONObject): Match {
-        val kickoff = runCatching { OffsetDateTime.parse(item.getString("kickoff")) }.getOrNull()
-        val home = item.getJSONObject("home")
-        val away = item.getJSONObject("away")
-        val score = item.getJSONObject("score")
+        val kickoff = runCatching { OffsetDateTime.parse(item.optString("kickoff")) }.getOrNull()
+        val localKickoff = kickoff?.atZoneSameInstant(APP_ZONE_ID)
+        val home = item.optJSONObject("home") ?: JSONObject()
+        val away = item.optJSONObject("away") ?: JSONObject()
+        val score = item.optJSONObject("score") ?: JSONObject()
         return Match(
-            id = item.getLong("id"), competition = item.optString("competition"), home = home.optString("name"), away = away.optString("name"),
-            date = kickoff?.format(dateFormatter)?.replaceFirstChar { it.titlecase(locale) } ?: "Data a definir",
-            time = kickoff?.format(timeFormatter) ?: "--:--", stadium = item.optString("stadium", "Local a definir"), city = item.optString("city"),
-            statusShort = item.optString("statusShort", "NS"), statusLong = item.optString("statusLong", "Agendado"),
-            scoreHome = score.optIntOrNull("home"), scoreAway = score.optIntOrNull("away"),
+            id = item.optLong("id"),
+            competition = item.optString("competition", "Competição a definir"),
+            home = home.optString("name", "A definir"),
+            away = away.optString("name", "A definir"),
+            date = localKickoff?.format(dateFormatter)?.replaceFirstChar { it.titlecase(locale) } ?: "Data a definir",
+            time = if (item.optString("kickoff").contains("T00:00:00")) "--:--" else localKickoff?.format(timeFormatter) ?: "--:--",
+            stadium = item.optString("stadium", "Local a definir"),
+            city = item.optString("city"),
+            statusShort = item.optString("statusShort", "NS"),
+            statusLong = item.optString("statusLong", "Agendado"),
+            scoreHome = score.optIntOrNull("home"),
+            scoreAway = score.optIntOrNull("away"),
+            kickoff = item.optString("kickoff"),
+            round = item.optString("round"),
+            broadcasters = item.optJSONArray("broadcasters").toStringList(),
+            detailsUrl = item.optString("detailsUrl")
+        )
+    }
+
+    private fun parseLiveMatch(item: JSONObject): LiveMatch {
+        val home = item.optJSONObject("home") ?: JSONObject()
+        val away = item.optJSONObject("away") ?: JSONObject()
+        val score = item.optJSONObject("score") ?: JSONObject()
+        return LiveMatch(
+            id = item.optLong("id"),
+            competition = item.optString("competition"),
+            stadium = item.optString("stadium", "Local a definir"),
+            city = item.optString("city"),
+            home = home.optString("name"),
+            away = away.optString("name"),
+            scoreHome = score.optIntOrNull("home") ?: 0,
+            scoreAway = score.optIntOrNull("away") ?: 0,
+            minute = item.optInt("minute"),
+            statusShort = item.optString("statusShort", "NS"),
+            statusLong = item.optString("statusLong", "Agendado"),
             kickoff = item.optString("kickoff")
         )
     }
 
+    private fun parseSquad(item: JSONObject, teamName: String): TeamSquad = TeamSquad(
+        teamName = teamName,
+        formation = item.optString("formation"),
+        coach = item.optJSONObject("coach")?.optString("popularName")
+            ?.ifBlank { item.optJSONObject("coach")?.optString("name").orEmpty() }
+            .orEmpty(),
+        starters = item.optJSONArray("lineUp").mapObjects(::parsePlayer),
+        bench = item.optJSONArray("bench").mapObjects(::parsePlayer)
+    )
+
+    private fun parsePlayer(item: JSONObject): Player = Player(
+        name = item.optString("popularName").ifBlank { item.optString("name") },
+        shirtNumber = item.optString("shirtNumber"),
+        position = item.optJSONObject("position")?.optString("description").orEmpty()
+    )
+
+    private fun parseTeamStats(item: JSONObject): TeamMatchStats = TeamMatchStats(
+        shotsOnGoal = item.statTotal("goalFinish"),
+        shotsOffGoal = item.statTotal("wrongFinish") + item.statTotal("ballOutFinish"),
+        blockedShots = item.statTotal("blockedFinish"),
+        ballPossession = item.statTotal("ballPossession"),
+        fouls = item.statTotal("foulMade"),
+        corners = item.statTotal("cornerKick"),
+        offsides = item.statTotal("offSide"),
+        saves = item.statTotal("defense"),
+        yellowCards = item.statTotal("yellowCardReceived"),
+        redCards = item.statTotal("redCardReceived"),
+        passes = item.statTotal("totalPasses"),
+        accuratePasses = item.statTotal("rightPasses"),
+        tackles = item.statTotal("tackle")
+    )
+
     private fun parseEvent(item: JSONObject): MatchEvent {
-        val type = when (item.optString("type").lowercase()) {
-            "goal" -> EventType.Goal; "card" -> if (item.optString("detail").contains("Red", true)) EventType.RedCard else EventType.YellowCard
-            "subst" -> EventType.Substitution; "var" -> EventType.Var; else -> EventType.Kickoff
+        val rawType = item.optString("type").uppercase()
+        val description = item.optString("description")
+        val type = when {
+            rawType == "GOAL" -> EventType.Goal
+            rawType == "RED_CARD" -> EventType.RedCard
+            rawType == "YELLOW_CARD" || rawType == "CARD" -> EventType.YellowCard
+            rawType == "SUBSTITUTION" || rawType == "SUBST" -> EventType.Substitution
+            rawType == "SHOT" -> EventType.Shot
+            rawType == "FOUL" -> EventType.Foul
+            rawType == "CORNER" -> EventType.Corner
+            rawType == "OFFSIDE" -> EventType.Offside
+            rawType == "SAVE" -> EventType.Save
+            rawType == "PENALTY" -> EventType.Penalty
+            rawType == "VAR" -> EventType.Var
+            rawType == "KICKOFF" -> EventType.Kickoff
+            description.contains("chute", true) || description.contains("finaliza", true) -> EventType.Shot
+            description.contains("falta", true) -> EventType.Foul
+            description.contains("escanteio", true) -> EventType.Corner
+            description.contains("impedimento", true) -> EventType.Offside
+            description.contains("defesa", true) -> EventType.Save
+            else -> EventType.Other
         }
-        val player = item.optString("player")
-        val detail = item.optString("detail")
-        return MatchEvent(item.optInt("minute"), item.optString("team"), type, listOf(player, detail).filter { it.isNotBlank() }.joinToString(" — "))
+        val fallbackId = listOf(
+            item.optString("period"),
+            item.optString("clock"),
+            item.optString("team"),
+            description.hashCode().toString()
+        ).joinToString("-")
+        return MatchEvent(
+            id = item.optString("id").ifBlank { fallbackId },
+            minute = item.optInt("minute"),
+            clock = item.optString("clock").ifBlank { item.optInt("minute").toString() },
+            period = item.optString("period"),
+            team = item.optString("team"),
+            type = type,
+            description = description,
+            createdAt = item.optString("createdAt")
+        )
     }
+
+    private fun parseCompetitionTable(item: JSONObject): CompetitionTable = CompetitionTable(
+        name = item.optString("name", "Competição"),
+        phase = item.optString("phase"),
+        kind = item.optString("kind", "league"),
+        groups = item.optJSONArray("groups").mapObjects { group ->
+            StandingGroup(
+                name = group.optString("name", "Classificação"),
+                entries = group.optJSONArray("entries").mapObjects(::parseStanding)
+            )
+        },
+        brackets = item.optJSONArray("brackets").mapObjects { round ->
+            BracketRound(
+                name = round.optString("name", "Mata-mata"),
+                ties = round.optJSONArray("ties").mapObjects { tie ->
+                    BracketTie(
+                        name = tie.optString("name"),
+                        games = tie.optJSONArray("games").mapObjects { game ->
+                            BracketGame(
+                                id = game.optLong("id"),
+                                date = game.optString("date"),
+                                home = game.optString("home"),
+                                away = game.optString("away"),
+                                scoreHome = game.optIntOrNull("scoreHome"),
+                                scoreAway = game.optIntOrNull("scoreAway"),
+                                penaltyHome = game.optIntOrNull("penaltyHome"),
+                                penaltyAway = game.optIntOrNull("penaltyAway")
+                            )
+                        }
+                    )
+                }
+            )
+        }
+    )
+
+    private fun parseStanding(row: JSONObject): Standing = Standing(
+        position = row.optInt("position"),
+        teamName = row.optString("teamName"),
+        points = row.optInt("points"),
+        played = row.optInt("played"),
+        wins = row.optInt("wins"),
+        draws = row.optInt("draws"),
+        losses = row.optInt("losses"),
+        goalDifference = row.optInt("goalDifference"),
+        form = row.optString("form")
+    )
 
     private data class Payload(val text: String, val notice: String?)
 
     private fun read(name: String): Payload {
-        val base = DataSettings.getBaseUrl(context).ifBlank { BuildConfig.DATA_BASE_URL.trimEnd('/') }
-        if (base.isNotBlank()) {
+        val base = DataSettings.getBaseUrl(context)
+        return try {
+            val connection = openConnection(base + "/" + name + "?ts=" + System.currentTimeMillis())
             try {
-                val connection = URL("$base/$name").openConnection() as HttpURLConnection
-                connection.connectTimeout = 8_000
-                connection.readTimeout = 8_000
-                connection.setRequestProperty("Accept", "application/json")
-                connection.inputStream.bufferedReader(Charsets.UTF_8).use { return Payload(it.readText(), null) }
-            } catch (_: Exception) {
-                return Payload(context.assets.open(name).bufferedReader().use { it.readText() }, "Sem conexão: exibindo a última cópia disponível.")
+                if (connection.responseCode !in 200..299) error("HTTP " + connection.responseCode)
+                Payload(connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }, null)
+            } finally {
+                connection.disconnect()
             }
+        } catch (_: Exception) {
+            Payload(
+                context.assets.open(name).bufferedReader(Charsets.UTF_8).use { it.readText() },
+                "Sem conexão: exibindo a última cópia disponível."
+            )
         }
-        return Payload(context.assets.open(name).bufferedReader().use { it.readText() }, "Fonte online ainda não configurada.")
+    }
+
+    private fun openConnection(address: String): HttpURLConnection =
+        (URL(address).openConnection() as HttpURLConnection).apply {
+            connectTimeout = 10_000
+            readTimeout = 12_000
+            useCaches = false
+            setRequestProperty("Accept", "application/json")
+            setRequestProperty("Cache-Control", "no-cache")
+        }
+}
+
+private fun <T : Any> JSONArray?.mapObjects(transform: (JSONObject) -> T?): List<T> = buildList {
+    val source = this@mapObjects ?: return@buildList
+    for (index in 0 until source.length()) {
+        source.optJSONObject(index)?.let(transform)?.let(::add)
     }
 }
 
-private fun JSONObject.optIntOrNull(name: String): Int? = if (isNull(name) || !has(name)) null else optInt(name)
+private fun JSONArray?.toStringList(): List<String> = buildList {
+    val source = this@toStringList ?: return@buildList
+    for (index in 0 until source.length()) {
+        source.optString(index).takeIf { it.isNotBlank() }?.let(::add)
+    }
+}
+
+private fun JSONObject.optIntOrNull(name: String): Int? =
+    if (isNull(name) || !has(name)) null else optInt(name)
+
+private fun JSONObject.statTotal(name: String): Int =
+    optJSONObject(name)?.optInt("total") ?: 0

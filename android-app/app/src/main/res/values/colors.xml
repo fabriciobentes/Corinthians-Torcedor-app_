@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="corinthians_red">#FFE30613</color>
+    <color name="corinthians_black">#FF0B0B0D</color>
 </resources>

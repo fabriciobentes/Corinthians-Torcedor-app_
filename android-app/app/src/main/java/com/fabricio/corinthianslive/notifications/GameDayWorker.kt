@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.fabricio.corinthianslive.data.CorinthiansRepository
-import java.time.LocalDate
-import java.time.OffsetDateTime
-import java.time.ZoneId
+import com.fabricio.corinthianslive.data.model.APP_ZONE_ID
+import com.fabricio.corinthianslive.data.model.kickoffAtManaus
+import com.fabricio.corinthianslive.data.model.resolvedStatus
+import java.time.Duration
+import java.time.ZonedDateTime
 
 class GameDayWorker(
     appContext: Context,
@@ -16,18 +18,46 @@ class GameDayWorker(
         if (!NotificationPreferences.isEnabled(applicationContext)) return Result.success()
 
         return runCatching {
-            val zone = ZoneId.of("America/Sao_Paulo")
-            val today = LocalDate.now(zone)
-            val finished = setOf("FT", "AET", "PEN", "WO")
-            val game = CorinthiansRepository(applicationContext).fixtures().data.firstOrNull { match ->
-                match.statusShort !in finished && runCatching {
-                    OffsetDateTime.parse(match.kickoff).atZoneSameInstant(zone).toLocalDate() == today
-                }.getOrDefault(false)
+            val repository = CorinthiansRepository(applicationContext)
+            val fixtures = repository.fixtures().data
+            val now = ZonedDateTime.now(APP_ZONE_ID)
+            val candidates = fixtures.filter { match ->
+                val kickoff = match.kickoffAtManaus()
+                kickoff != null &&
+                    kickoff.isBefore(now.plusDays(8)) &&
+                    kickoff.isAfter(now.minusHours(5)) &&
+                    match.resolvedStatus(now) !in setOf("FT", "AET", "PEN", "WO", "CANC", "PST")
             }
 
-            if (game != null && NotificationPreferences.lastNotifiedMatch(applicationContext) != game.id) {
-                if (GameNotificationManager.showGameDay(applicationContext, game)) {
-                    NotificationPreferences.markMatchNotified(applicationContext, game.id)
+            candidates.forEach { match ->
+                GameNotificationManager.scheduleMatchAlerts(applicationContext, match)
+                val kickoff = match.kickoffAtManaus() ?: return@forEach
+                val minutesToStart = Duration.between(now, kickoff).toMinutes()
+                if (minutesToStart in 20..35) {
+                    GameNotificationManager.showPreGame(applicationContext, match)
+                }
+                if (minutesToStart in -10..2) {
+                    GameNotificationManager.showKickoff(applicationContext, match)
+                }
+                if (match.resolvedStatus(now) == "LIVE" || minutesToStart in -240..0) {
+                    GameNotificationManager.startLiveTracking(applicationContext, match.id)
+                }
+            }
+
+            val nearGame = candidates.firstOrNull { match ->
+                val kickoff = match.kickoffAtManaus() ?: return@firstOrNull false
+                Duration.between(now, kickoff).toMinutes() in -240..90
+            }
+            if (nearGame != null) {
+                val live = repository.live().data
+                if (live.match?.id == nearGame.id && (live.homeSquad != null || live.awaySquad != null)) {
+                    GameNotificationManager.showLineup(
+                        applicationContext,
+                        nearGame.id,
+                        live.lineupStatus,
+                        live.homeSquad,
+                        live.awaySquad
+                    )
                 }
             }
             Result.success()

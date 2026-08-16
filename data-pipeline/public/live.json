@@ -1,8 +1,375 @@
 {
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-05T05:09:13.124Z",
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-16T17:53:10.553Z",
   "source": "ge-corinthians",
-  "coverage": "Placar e situação da partida; lances minuto a minuto dependem da cobertura da fonte",
+  "coverage": "Placar, escalações, estatísticas e todos os lances publicados pela cobertura da partida.",
   "liveMatches": [],
-  "eventsByFixture": {}
+  "featuredMatch": {
+    "id": 346334,
+    "competition": "Brasileirão Série A",
+    "competitionLogo": "",
+    "round": "23ª rodada",
+    "kickoff": "2026-08-16T19:30:00-03:00",
+    "stadium": "Neo Química Arena",
+    "city": "São Paulo",
+    "statusShort": "NS",
+    "statusLong": "Agendado",
+    "minute": 0,
+    "home": {
+      "id": 264,
+      "name": "Corinthians",
+      "logo": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
+      "winner": null
+    },
+    "away": {
+      "id": 283,
+      "name": "Cruzeiro",
+      "logo": "https://s.sde.globo.com/media/organizations/2021/02/13/cruzeiro_2021.svg",
+      "winner": null
+    },
+    "score": {
+      "home": null,
+      "away": null,
+      "penalties": null
+    },
+    "detailsUrl": "https://ge.globo.com/sp/futebol/brasileirao-serie-a/jogo/16-08-2026/corinthians-cruzeiro.ghtml",
+    "broadcasters": [
+      "Prime Vídeo"
+    ],
+    "squads": {
+      "homeTeam": {
+        "formation": "4-5-1",
+        "coach": {
+          "name": "Fernando Diniz Silva",
+          "popularName": "Fernando Diniz"
+        },
+        "lineUp": [
+          {
+            "name": "Hugo de Souza Nogueira",
+            "popularName": "Hugo Souza",
+            "shirtNumber": "1",
+            "position": {
+              "description": "Goleiro",
+              "initials": "GOL",
+              "playAt": "Gol"
+            }
+          },
+          {
+            "name": "Matheus França Silva",
+            "popularName": "Matheuzinho",
+            "shirtNumber": "2",
+            "position": {
+              "description": "Lateral-direito",
+              "initials": "LAD",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "André Ramalho Silva",
+            "popularName": "André Ramalho",
+            "shirtNumber": "",
+            "position": {
+              "description": "Zagueiro direito",
+              "initials": "ZAD",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Gustavo Henrique Vernes",
+            "popularName": "Gustavo Henrique",
+            "shirtNumber": "13",
+            "position": {
+              "description": "Zagueiro esquerdo",
+              "initials": "ZAE",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Fabrizio Germán Angileri - Fabricio",
+            "popularName": "Angileri",
+            "shirtNumber": "",
+            "position": {
+              "description": "Lateral-esquerdo",
+              "initials": "LAE",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Allan Rodrigues de Souza",
+            "popularName": "Allan",
+            "shirtNumber": "",
+            "position": {
+              "description": "Volante",
+              "initials": "VOL",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Jesse Ellis Lingard",
+            "popularName": "Lingard",
+            "shirtNumber": "",
+            "position": {
+              "description": "Meio-campo",
+              "initials": "MEC",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Matheus Pereira da Silva",
+            "popularName": "Matheus Pereira",
+            "shirtNumber": "",
+            "position": {
+              "description": "Volante",
+              "initials": "VOL",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Rodrigo Garro",
+            "popularName": "Garro",
+            "shirtNumber": "8",
+            "position": {
+              "description": "Meio-campo",
+              "initials": "MEC",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Breno de Souza Bidon",
+            "popularName": "Breno Bidon",
+            "shirtNumber": "7",
+            "position": {
+              "description": "Meio-campo",
+              "initials": "MEC",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Guilherme William Silva Inácio",
+            "popularName": "Gui Negão",
+            "shirtNumber": "",
+            "position": {
+              "description": "Atacante",
+              "initials": "ATA",
+              "playAt": "Ataque"
+            }
+          }
+        ],
+        "bench": []
+      },
+      "awayTeam": {
+        "formation": "4-3-3",
+        "coach": {
+          "name": "Artur Jorge Torres Gomes Araújo Amorim",
+          "popularName": "Artur Jorge"
+        },
+        "lineUp": [
+          {
+            "name": "Otávio Eleodoro Rezende Costa",
+            "popularName": "Otávio",
+            "shirtNumber": "81",
+            "position": {
+              "description": "Goleiro",
+              "initials": "GOL",
+              "playAt": "Gol"
+            }
+          },
+          {
+            "name": "Fagner Conserva Lemos",
+            "popularName": "Fagner",
+            "shirtNumber": "",
+            "position": {
+              "description": "Lateral-direito",
+              "initials": "LAD",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Fabrício Bruno Soares de Faria",
+            "popularName": "Fabrício Bruno",
+            "shirtNumber": "",
+            "position": {
+              "description": "Zagueiro direito",
+              "initials": "ZAD",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Jonathan de Jesus Alves",
+            "popularName": "Jonathan Jesus",
+            "shirtNumber": "",
+            "position": {
+              "description": "Zagueiro esquerdo",
+              "initials": "ZAE",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Lucas Hernán Villalba",
+            "popularName": "Villalba",
+            "shirtNumber": "",
+            "position": {
+              "description": "Lateral-esquerdo",
+              "initials": "LAE",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Matheus Henrique de Souza",
+            "popularName": "Matheus Henrique",
+            "shirtNumber": "7",
+            "position": {
+              "description": "Volante",
+              "initials": "VOL",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "José Lucas Gomes da Silva",
+            "popularName": "Zé Lucas",
+            "shirtNumber": "",
+            "position": {
+              "description": "Volante",
+              "initials": "VOL",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Gerson Santos da Silva",
+            "popularName": "Gerson",
+            "shirtNumber": "8",
+            "position": {
+              "description": "Volante",
+              "initials": "VOL",
+              "playAt": ""
+            }
+          },
+          {
+            "name": "Kaio Jorge Pinto Ramos",
+            "popularName": "Kaio Jorge",
+            "shirtNumber": "19",
+            "position": {
+              "description": "Atacante",
+              "initials": "ATA",
+              "playAt": "Ataque"
+            }
+          },
+          {
+            "name": "João Gabriel e Costa Cesco",
+            "popularName": "João Costa",
+            "shirtNumber": "",
+            "position": {
+              "description": "Atacante",
+              "initials": "ATA",
+              "playAt": "Ataque"
+            }
+          },
+          {
+            "name": "Wesley Gassova Ribeiro Teixeira",
+            "popularName": "Wesley",
+            "shirtNumber": "",
+            "position": {
+              "description": "Atacante",
+              "initials": "ATA",
+              "playAt": "Ataque"
+            }
+          }
+        ],
+        "bench": []
+      }
+    },
+    "statistics": {
+      "awayTeam": {
+        "lastMatchesResults": [
+          "DRAW",
+          "VICTORY",
+          "DEFEAT",
+          "VICTORY",
+          "VICTORY"
+        ],
+        "standings": {
+          "matchesPlayed": 22,
+          "points": 33,
+          "position": 6
+        },
+        "statistics": {
+          "cornerKick": {
+            "average": 4.95
+          },
+          "goalFinish": {
+            "average": 1.36,
+            "total": 30
+          },
+          "redCardReceived": {
+            "total": 4
+          },
+          "wrongFinish": {
+            "average": 6,
+            "total": 132
+          },
+          "yellowCardReceived": {
+            "average": 2.45
+          }
+        }
+      },
+      "homeTeam": {
+        "lastMatchesResults": [
+          "VICTORY",
+          "VICTORY",
+          "DRAW",
+          "DRAW",
+          "VICTORY"
+        ],
+        "standings": {
+          "matchesPlayed": 22,
+          "points": 32,
+          "position": 8
+        },
+        "statistics": {
+          "cornerKick": {
+            "average": 3.86
+          },
+          "goalFinish": {
+            "average": 1.09,
+            "total": 24
+          },
+          "redCardReceived": {
+            "total": 7
+          },
+          "wrongFinish": {
+            "average": 4.86,
+            "total": 107
+          },
+          "yellowCardReceived": {
+            "average": 2.77
+          }
+        }
+      }
+    },
+    "lineupStatus": "Escalação oficial"
+  },
+  "eventsByFixture": {
+    "346334": [
+      {
+        "id": "28be3c2e-838b-47bf-863b-4f95f769da85",
+        "minute": 0,
+        "clock": "",
+        "period": "Pré-jogo",
+        "team": "",
+        "type": "OTHER",
+        "description": "Informações e palpite para o jogo",
+        "createdAt": "2026-08-14T20:11:28.489Z"
+      },
+      {
+        "id": "db1962bd-58de-4c8c-b7ca-18d925e6045d",
+        "minute": 0,
+        "clock": "",
+        "period": "Pré-jogo",
+        "team": "",
+        "type": "OTHER",
+        "description": "Entrada no G-4 que leva para a Libertadores é objetivo comum neste confronto em que a força defensiva é fundamental para o sucesso. Conheça a análise do Gato Mestre.",
+        "createdAt": "2026-08-14T23:12:38.756Z"
+      }
+    ]
+  }
 }

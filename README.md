@@ -1,16 +1,17 @@
-# Corinthians Live
+# Corinthians torcedor
 
 Aplicativo Android pessoal para acompanhar a agenda, os resultados e o desempenho do Corinthians.
 
 ## O que funciona
 
 - Agenda do Corinthians em todas as competições publicadas, incluindo Brasileirão, Copa do Brasil, Libertadores, Paulista e amistosos.
+- Próximos jogos separados entre hoje, esta semana, restante do mês e meses seguintes, com contagem regressiva.
 - Histórico dos resultados em todas essas competições.
 - Placar e situação da partida quando o Corinthians estiver em campo.
 - Classificação completa do Brasileirão, com alto contraste e destaque para o Corinthians.
 - Estatísticas dos últimos 10 jogos, forma recente e desempenho por competição.
 - Notificação automática nos dias de jogo, com botão de teste na tela **Ajustes**.
-- Ícone oficial do Corinthians preparado para os formatos de ícone do Android.
+- Ícone oficial do Corinthians nos formatos adaptativo e `mipmap`, além do escudo monocromático nas notificações.
 - Atualização automática pelo GitHub a cada hora.
 - Funcionamento offline com a última cópia incluída no aplicativo.
 - Endereço dos dados já configurado para este repositório.

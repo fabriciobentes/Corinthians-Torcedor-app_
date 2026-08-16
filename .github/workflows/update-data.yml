@@ -9,7 +9,7 @@ on:
       - "data-pipeline/package-lock.json"
       - ".github/workflows/update-data.yml"
   schedule:
-    - cron: "7 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
