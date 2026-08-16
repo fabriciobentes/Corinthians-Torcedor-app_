@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
   "schemaVersion": 2,
   "generatedAt": "2026-08-16T17:53:10.553Z",
+=======
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-16T17:30:39.060Z",
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
   "source": "ge-corinthians",
   "coverage": "Placar, escalações, estatísticas e todos os lances publicados pela cobertura da partida.",
   "liveMatches": [],

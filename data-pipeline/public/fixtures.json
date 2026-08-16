@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
   "schemaVersion": 2,
   "generatedAt": "2026-08-16T17:53:10.553Z",
+=======
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-16T17:30:39.060Z",
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
   "source": "ge-corinthians",
   "team": {
     "id": 264,
@@ -17,6 +22,7 @@
   ],
   "fixtures": [
     {
+<<<<<<< HEAD
       "id": 345812,
       "competition": "Campeonato Paulista",
       "competitionLogo": "",
@@ -865,6 +871,8 @@
       ]
     },
     {
+=======
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "id": 352089,
       "competition": "Copa do Brasil",
       "competitionLogo": "",
@@ -5054,10 +5062,17 @@
       "round": "Oitavas de final",
       "kickoff": "2026-08-06T20:00:00-03:00",
       "stadium": "Neo Química Arena",
+<<<<<<< HEAD
       "city": "São Paulo",
       "statusShort": "FT",
       "statusLong": "Encerrado",
       "minute": 0,
+=======
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "home": {
         "id": 264,
         "name": "Corinthians",
@@ -5680,10 +5695,17 @@
       "round": "22ª rodada",
       "kickoff": "2026-08-09T18:30:00-03:00",
       "stadium": "Cícero de Souza Marques",
+<<<<<<< HEAD
       "city": "Bragança Paulista",
       "statusShort": "FT",
       "statusLong": "Encerrado",
       "minute": 0,
+=======
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "home": {
         "id": 280,
         "name": "Bragantino",
@@ -6306,10 +6328,17 @@
       "round": "Oitavas de final",
       "kickoff": "2026-08-13T21:30:00-03:00",
       "stadium": "Gigante Arroyito",
+<<<<<<< HEAD
       "city": "Argentina",
       "statusShort": "FT",
       "statusLong": "Encerrado",
       "minute": 0,
+=======
+      "city": "",
+      "statusShort": "FT",
+      "statusLong": "Encerrado",
+      "minute": null,
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "home": {
         "id": 2412,
         "name": "Rosario Central",
@@ -6955,6 +6984,7 @@
       },
       "detailsUrl": "https://ge.globo.com/sp/futebol/brasileirao-serie-a/jogo/16-08-2026/corinthians-cruzeiro.ghtml",
       "broadcasters": [
+<<<<<<< HEAD
         "Prime Vídeo"
       ],
       "squads": {
@@ -7268,6 +7298,11 @@
         }
       },
       "lineupStatus": "Escalação oficial"
+=======
+        "Cartola",
+        "Prime Vídeo"
+      ]
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
     },
     {
       "id": 353268,
@@ -7332,7 +7367,12 @@
       },
       "detailsUrl": "",
       "broadcasters": [
+<<<<<<< HEAD
         "Premiere"
+=======
+        "Premiere",
+        "Cartola"
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       ]
     },
     {
@@ -7342,7 +7382,11 @@
       "round": "25ª rodada",
       "kickoff": "2026-08-30T16:00:00-03:00",
       "stadium": "Neo Química Arena",
+<<<<<<< HEAD
       "city": "São Paulo",
+=======
+      "city": "",
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "statusShort": "NS",
       "statusLong": "Agendado",
       "minute": null,
@@ -7373,7 +7417,11 @@
       "round": "26ª rodada",
       "kickoff": "2026-09-06T19:30:00-03:00",
       "stadium": "Neo Química Arena",
+<<<<<<< HEAD
       "city": "São Paulo",
+=======
+      "city": "",
+>>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "statusShort": "NS",
       "statusLong": "Agendado",
       "minute": null,
