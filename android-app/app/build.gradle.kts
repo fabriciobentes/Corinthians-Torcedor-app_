@@ -4,7 +4,7 @@ plugins {
 }
 
 val corinthiansDataUrl = providers.gradleProperty("CORINTHIANS_DATA_URL")
-    .orElse("https://fabriciobentes.github.io/Corinthians-Torcedor-")
+    .orElse("https://fabriciobentes.github.io/Corinthians-Torcedor-app_")
     .get()
 
 android {

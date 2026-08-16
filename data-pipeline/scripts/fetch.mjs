@@ -65,10 +65,14 @@ function atomicWrite(name, data) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   const target = path.join(OUT_DIR, name);
   if (fs.existsSync(target)) {
-    const current = JSON.parse(fs.readFileSync(target, "utf8"));
-    const currentComparable = { ...current, generatedAt: "" };
-    const nextComparable = { ...data, generatedAt: "" };
-    if (JSON.stringify(currentComparable) === JSON.stringify(nextComparable)) return false;
+    try {
+      const current = JSON.parse(fs.readFileSync(target, "utf8"));
+      const currentComparable = { ...current, generatedAt: "" };
+      const nextComparable = { ...data, generatedAt: "" };
+      if (JSON.stringify(currentComparable) === JSON.stringify(nextComparable)) return false;
+    } catch {
+      console.warn(`Arquivo ${name} inválido; ele será regenerado por completo.`);
+    }
   }
   const temporary = `${target}.tmp`;
   fs.writeFileSync(temporary, `${JSON.stringify(data, null, 2)}\n`, "utf8");

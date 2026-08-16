@@ -1,4 +1,4 @@
-name: Atualizar dados do Corinthians
+name: Validar dados do Corinthians
 
 on:
   push:
@@ -8,19 +8,13 @@ on:
       - "data-pipeline/package.json"
       - "data-pipeline/package-lock.json"
       - ".github/workflows/update-data.yml"
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: corinthians-data
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  update:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -33,10 +27,3 @@ jobs:
         run: |
           npm ci
           npm run all
-      - name: Publicar somente quando houver mudanças
-        run: |
-          git config user.name "corinthians-live-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add data-pipeline/public
-          git diff --cached --quiet || git commit -m "chore: atualizar dados dos jogos"
-          git push

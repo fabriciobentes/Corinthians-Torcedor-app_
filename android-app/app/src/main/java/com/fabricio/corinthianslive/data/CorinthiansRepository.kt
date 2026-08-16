@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.OffsetDateTime
@@ -369,17 +370,51 @@ class CorinthiansRepository(private val context: Context) {
             val connection = openConnection(base + "/" + name + "?ts=" + System.currentTimeMillis())
             try {
                 if (connection.responseCode !in 200..299) error("HTTP " + connection.responseCode)
-                Payload(connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }, null)
+                val text = connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                validateJson(text)
+                saveCache(name, text)
+                Payload(text, null)
             } finally {
                 connection.disconnect()
             }
         } catch (_: Exception) {
-            Payload(
-                context.assets.open(name).bufferedReader(Charsets.UTF_8).use { it.readText() },
-                "Sem conexão: exibindo a última cópia disponível."
-            )
+            val cached = readCache(name)
+            if (cached != null) {
+                Payload(cached, "GitHub indisponível: exibindo a última cópia válida.")
+            } else {
+                val bundled = context.assets.open(name).bufferedReader(Charsets.UTF_8).use { it.readText() }
+                validateJson(bundled)
+                Payload(bundled, "GitHub indisponível: exibindo a cópia incluída no app.")
+            }
         }
     }
+
+    private fun validateJson(text: String) {
+        if (text.contains("<<<<<<<") || text.contains("=======") || text.contains(">>>>>>>")) {
+            error("O arquivo contém marcadores de conflito do Git.")
+        }
+        JSONObject(text)
+    }
+
+    private fun cacheFile(name: String): File =
+        File(context.filesDir, "corinthians-data").resolve(name)
+
+    private fun saveCache(name: String, text: String) {
+        runCatching {
+            val target = cacheFile(name)
+            target.parentFile?.mkdirs()
+            val temporary = File(target.parentFile, target.name + ".tmp")
+            temporary.writeText(text, Charsets.UTF_8)
+            if (!temporary.renameTo(target)) {
+                target.writeText(text, Charsets.UTF_8)
+                temporary.delete()
+            }
+        }
+    }
+
+    private fun readCache(name: String): String? = runCatching {
+        cacheFile(name).takeIf(File::isFile)?.readText(Charsets.UTF_8)?.also(::validateJson)
+    }.getOrNull()
 
     private fun openConnection(address: String): HttpURLConnection =
         (URL(address).openConnection() as HttpURLConnection).apply {

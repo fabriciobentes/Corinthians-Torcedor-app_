@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
   "schemaVersion": 2,
-  "generatedAt": "2026-08-16T17:53:10.553Z",
-=======
-  "schemaVersion": 1,
-  "generatedAt": "2026-08-16T17:30:39.060Z",
->>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
+  "generatedAt": "2026-08-16T19:18:34.564Z",
   "source": "ge-corinthians",
   "teamId": 264,
   "window": 10,
@@ -324,11 +319,7 @@
       "round": "Oitavas de final",
       "kickoff": "2026-08-06T20:00:00-03:00",
       "stadium": "Neo Química Arena",
-<<<<<<< HEAD
       "city": "São Paulo",
-=======
-      "city": "",
->>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       "statusShort": "FT",
       "statusLong": "Encerrado",
       "minute": null,
@@ -384,12 +375,7 @@
       },
       "detailsUrl": "https://ge.globo.com/sp/vale-do-paraiba-regiao/futebol/brasileirao-serie-a/jogo/09-08-2026/bragantino-corinthians.ghtml",
       "broadcasters": [
-<<<<<<< HEAD
         "Premiere"
-=======
-        "Premiere",
-        "Cartola"
->>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
       ]
     },
     {
@@ -424,7 +410,6 @@
       "broadcasters": [
         "Disney+"
       ]
-<<<<<<< HEAD
     }
   ],
   "matchDetails": [
@@ -16020,8 +16005,6 @@
           "createdAt": "2026-08-14T02:34:50.455Z"
         }
       ]
-=======
->>>>>>> a40b7b39fb18986b155ffcce5446a9db83d50768
     }
   ]
 }
