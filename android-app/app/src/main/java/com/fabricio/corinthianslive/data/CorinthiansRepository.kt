@@ -22,6 +22,9 @@ import com.fabricio.corinthianslive.data.model.StatsSummary
 import com.fabricio.corinthianslive.data.model.TeamMatchStats
 import com.fabricio.corinthianslive.data.model.TeamSquad
 import com.fabricio.corinthianslive.data.model.TeamStats
+import com.fabricio.corinthianslive.data.model.kickoffAtManaus
+import com.fabricio.corinthianslive.data.model.resolvedStatus
+import com.fabricio.corinthianslive.data.model.resolvedStatusLabel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -29,15 +32,26 @@ import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.Duration
+import java.time.Instant
 import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+
+private const val LIVE_SEED_TTL_MS = 60_000L
+private const val FIXTURES_TTL_MS = 15 * 60_000L
 
 class CorinthiansRepository(private val context: Context) {
     private val mock = MockRepository()
     private val locale = Locale.forLanguageTag("pt-BR")
     private val dateFormatter = DateTimeFormatter.ofPattern("EEE, dd/MM", locale)
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", locale)
+    private val realtimeSource = RealtimeLiveDataSource()
+    private var cachedLiveSeed: RepositoryResult<LiveContent>? = null
+    private var cachedLiveSeedAt: Long = 0
+    private var cachedFixtures: List<Match>? = null
+    private var cachedFixturesAt: Long = 0
 
     suspend fun fixtures(): RepositoryResult<List<Match>> = withContext(Dispatchers.IO) {
         val payload = read("fixtures.json")
@@ -80,6 +94,96 @@ class CorinthiansRepository(private val context: Context) {
             source = root.optString("source", "desconhecida"),
             generatedAt = root.optString("generatedAt"),
             notice = payload.notice
+        )
+    }
+
+    suspend fun liveRealtime(matchId: Long? = null): RepositoryResult<LiveContent> = withContext(Dispatchers.IO) {
+        val requestTime = System.currentTimeMillis()
+        val published = if (cachedLiveSeed == null || requestTime - cachedLiveSeedAt >= LIVE_SEED_TTL_MS) {
+            runCatching { live() }.getOrElse { cachedLiveSeed ?: throw it }.also {
+                cachedLiveSeed = it
+                cachedLiveSeedAt = requestTime
+            }
+        } else {
+            requireNotNull(cachedLiveSeed)
+        }
+        val fixtures = if (cachedFixtures == null || requestTime - cachedFixturesAt >= FIXTURES_TTL_MS) {
+            runCatching { fixtures().data }.getOrElse { cachedFixtures.orEmpty() }.also {
+                cachedFixtures = it
+                cachedFixturesAt = requestTime
+            }
+        } else {
+            cachedFixtures.orEmpty()
+        }
+        val now = ZonedDateTime.now(APP_ZONE_ID)
+        val publishedMatch = published.data.match?.takeIf { matchId == null || it.id == matchId }
+        val fixture = when {
+            matchId != null -> fixtures.firstOrNull { it.id == matchId }
+            publishedMatch != null -> fixtures.firstOrNull { it.id == publishedMatch.id }
+            else -> fixtures.firstOrNull { candidate ->
+                val kickoff = candidate.kickoffAtManaus() ?: return@firstOrNull false
+                candidate.resolvedStatus(now) == "LIVE" || Duration.between(now, kickoff).toMinutes() in -300..60
+            }
+        }
+        val fallbackMatch = publishedMatch ?: fixture?.toLiveMatch(now)
+        if (fallbackMatch == null) return@withContext published
+        val fallbackContent = if (published.data.match?.id == fallbackMatch.id) {
+            published.data
+        } else {
+            LiveContent(match = fallbackMatch, events = emptyList())
+        }
+        val detailsUrl = fixture?.detailsUrl.orEmpty()
+        if (detailsUrl.isBlank()) {
+            return@withContext RepositoryResult(
+                data = fallbackContent,
+                source = published.source,
+                generatedAt = published.generatedAt,
+                notice = published.notice
+            )
+        }
+
+        runCatching { realtimeSource.fetch(detailsUrl, fallbackContent) }
+            .fold(
+                onSuccess = { content ->
+                    RepositoryResult(
+                        data = content,
+                        source = "ge-corinthians-direto",
+                        generatedAt = Instant.now().toString(),
+                        notice = null
+                    )
+                },
+                onFailure = {
+                    RepositoryResult(
+                        data = fallbackContent,
+                        source = published.source,
+                        generatedAt = published.generatedAt,
+                        notice = "Fonte direta temporariamente indisponível; exibindo a última atualização publicada."
+                    )
+                }
+            )
+    }
+
+    private fun Match.toLiveMatch(now: ZonedDateTime): LiveMatch {
+        val status = resolvedStatus(now)
+        val kickoffAt = kickoffAtManaus()
+        val elapsedMinutes = if (status == "LIVE" && kickoffAt != null) {
+            Duration.between(kickoffAt, now).toMinutes().coerceIn(0, 180).toInt()
+        } else {
+            0
+        }
+        return LiveMatch(
+            id = id,
+            competition = competition,
+            stadium = stadium,
+            city = city,
+            home = home,
+            away = away,
+            scoreHome = scoreHome ?: 0,
+            scoreAway = scoreAway ?: 0,
+            minute = elapsedMinutes,
+            statusShort = status,
+            statusLong = resolvedStatusLabel(now),
+            kickoff = kickoff
         )
     }
 
@@ -438,6 +542,7 @@ private fun JSONArray?.toStringList(): List<String> = buildList {
     for (index in 0 until source.length()) {
         source.optString(index).takeIf { it.isNotBlank() }?.let(::add)
     }
+
 }
 
 private fun JSONObject.optIntOrNull(name: String): Int? =

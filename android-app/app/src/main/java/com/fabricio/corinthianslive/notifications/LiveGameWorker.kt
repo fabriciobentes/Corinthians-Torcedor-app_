@@ -5,6 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.fabricio.corinthianslive.data.CorinthiansRepository
 import com.fabricio.corinthianslive.data.model.APP_ZONE_ID
+import kotlinx.coroutines.delay
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
@@ -17,37 +18,54 @@ class LiveGameWorker(
         val matchId = inputData.getLong(GameNotificationManager.INPUT_MATCH_ID, Long.MIN_VALUE)
         if (matchId == Long.MIN_VALUE) return Result.failure()
 
-        return runCatching {
-            val live = CorinthiansRepository(applicationContext).live().data
-            val match = live.match
-            if (match == null || match.id != matchId) return@runCatching Result.retry()
+        val repository = CorinthiansRepository(applicationContext)
+        val trackingStartedAt = System.currentTimeMillis()
+        setForeground(GameNotificationManager.liveForegroundInfo(applicationContext, matchId, null))
 
-            if (live.homeSquad != null || live.awaySquad != null) {
-                GameNotificationManager.showLineup(
-                    applicationContext,
-                    matchId,
-                    live.lineupStatus,
-                    live.homeSquad,
-                    live.awaySquad
-                )
-            }
-            live.events.forEach { event ->
-                GameNotificationManager.showEvent(applicationContext, matchId, event)
-            }
+        while (
+            NotificationPreferences.isEnabled(applicationContext) &&
+            System.currentTimeMillis() - trackingStartedAt < MAX_TRACKING_DURATION_MS
+        ) {
+            runCatching { repository.liveRealtime(matchId).data }
+                .onSuccess { live ->
+                    val match = live.match
+                    if (match != null && match.id == matchId) {
+                        if (live.homeSquad != null || live.awaySquad != null) {
+                            GameNotificationManager.showLineup(
+                                applicationContext,
+                                matchId,
+                                live.lineupStatus,
+                                live.homeSquad,
+                                live.awaySquad
+                            )
+                        }
+                        live.events.forEach { event ->
+                            GameNotificationManager.showEvent(applicationContext, matchId, event)
+                        }
+                        setForeground(
+                            GameNotificationManager.liveForegroundInfo(applicationContext, matchId, match)
+                        )
 
-            val finished = match.statusShort in setOf("FT", "AET", "PEN", "WO", "CANC")
-            val kickoff = runCatching {
-                OffsetDateTime.parse(match.kickoff).atZoneSameInstant(APP_ZONE_ID)
-            }.getOrNull()
-            val now = ZonedDateTime.now(APP_ZONE_ID)
-            val insideGameWindow = kickoff != null &&
-                now.isAfter(kickoff.minusHours(1)) &&
-                now.isBefore(kickoff.plusHours(5))
-            if (!finished && insideGameWindow) {
-                GameNotificationManager.scheduleNextLivePoll(applicationContext, matchId)
-            }
-            Result.success()
-        }.getOrElse { Result.retry() }
+                        if (match.statusShort in FINISHED_STATUSES || matchWindowEnded(match.kickoff)) {
+                            return Result.success()
+                        }
+                    }
+                }
+            delay(LIVE_POLL_INTERVAL_MS)
+        }
+        return Result.success()
+    }
+
+    private fun matchWindowEnded(kickoff: String): Boolean {
+        val start = runCatching {
+            OffsetDateTime.parse(kickoff).atZoneSameInstant(APP_ZONE_ID)
+        }.getOrNull() ?: return false
+        return ZonedDateTime.now(APP_ZONE_ID).isAfter(start.plusHours(5))
+    }
+
+    private companion object {
+        const val LIVE_POLL_INTERVAL_MS = 10_000L
+        const val MAX_TRACKING_DURATION_MS = 6 * 60 * 60 * 1_000L
+        val FINISHED_STATUSES = setOf("FT", "AET", "PEN", "WO", "CANC", "PST", "AWAITING_RESULT")
     }
 }
-

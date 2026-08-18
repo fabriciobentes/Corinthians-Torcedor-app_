@@ -8,6 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ForegroundInfo
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -27,6 +29,7 @@ import com.fabricio.corinthianslive.R
 import com.fabricio.corinthianslive.data.model.EventType
 import com.fabricio.corinthianslive.data.model.Match
 import com.fabricio.corinthianslive.data.model.MatchEvent
+import com.fabricio.corinthianslive.data.model.LiveMatch
 import com.fabricio.corinthianslive.data.model.TeamSquad
 import java.time.Duration
 import java.time.Instant
@@ -35,6 +38,7 @@ import java.util.concurrent.TimeUnit
 
 object GameNotificationManager {
     const val CHANNEL_ID = "corinthians_game_events_v2"
+    const val LIVE_CHANNEL_ID = "corinthians_live_tracking_v1"
     const val ALERT_PRE_GAME = "pre_game"
     const val ALERT_KICKOFF = "kickoff"
     const val ALERT_LINEUP = "lineup"
@@ -42,6 +46,7 @@ object GameNotificationManager {
     const val INPUT_ALERT_TYPE = "alert_type"
     private const val PERIODIC_WORK = "corinthians_game_checks"
     private const val IMMEDIATE_WORK = "corinthians_game_check_now"
+    private const val LIVE_TRACKING_NOTIFICATION_ID = 19101
 
     private val networkConstraint = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -49,7 +54,7 @@ object GameNotificationManager {
 
     fun createChannel(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val channel = NotificationChannel(
+        val eventsChannel = NotificationChannel(
             CHANNEL_ID,
             context.getString(R.string.game_notification_channel_name),
             NotificationManager.IMPORTANCE_HIGH
@@ -57,7 +62,17 @@ object GameNotificationManager {
             description = context.getString(R.string.game_notification_channel_description)
             enableVibration(true)
         }
-        context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        val trackingChannel = NotificationChannel(
+            LIVE_CHANNEL_ID,
+            context.getString(R.string.live_tracking_channel_name),
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = context.getString(R.string.live_tracking_channel_description)
+            setSound(null, null)
+            enableVibration(false)
+        }
+        context.getSystemService(NotificationManager::class.java)
+            .createNotificationChannels(listOf(eventsChannel, trackingChannel))
     }
 
     fun scheduleChecks(context: Context) {
@@ -115,21 +130,6 @@ object GameNotificationManager {
         )
     }
 
-    fun scheduleNextLivePoll(context: Context, matchId: Long) {
-        val request = OneTimeWorkRequestBuilder<LiveGameWorker>()
-            .setInputData(Data.Builder().putLong(INPUT_MATCH_ID, matchId).build())
-            .addTag("corinthians_live")
-            .setInitialDelay(1, TimeUnit.MINUTES)
-            .setConstraints(networkConstraint)
-            .build()
-        val minute = System.currentTimeMillis() / 60_000
-        WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(
-            "corinthians_live_${matchId}_${minute + 1}",
-            ExistingWorkPolicy.KEEP,
-            request
-        )
-    }
-
     fun cancelChecks(context: Context) {
         WorkManager.getInstance(context.applicationContext).apply {
             cancelUniqueWork(PERIODIC_WORK)
@@ -143,6 +143,48 @@ object GameNotificationManager {
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
         return permissionGranted && NotificationManagerCompat.from(context).areNotificationsEnabled()
+    }
+
+    fun liveForegroundInfo(context: Context, matchId: Long, match: LiveMatch?): ForegroundInfo {
+        createChannel(context)
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            LIVE_TRACKING_NOTIFICATION_ID,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val body = if (match == null) {
+            "Preparando o acompanhamento lance a lance."
+        } else {
+            val clock = if (match.minute > 0) "${match.minute}' • " else ""
+            "$clock${match.home} ${match.scoreHome} x ${match.scoreAway} ${match.away}"
+        }
+        val notification = NotificationCompat.Builder(context, LIVE_CHANNEL_ID)
+            .setSmallIcon(R.drawable.corinthians_logo)
+            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.corinthians_crest))
+            .setContentTitle("Corinthians em tempo real")
+            .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setContentIntent(pendingIntent)
+            .setColor(ContextCompat.getColor(context, R.color.corinthians_black))
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
+            .setOngoing(true)
+            .build()
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ForegroundInfo(
+                LIVE_TRACKING_NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            )
+        } else {
+            ForegroundInfo(LIVE_TRACKING_NOTIFICATION_ID, notification)
+        }
     }
 
     fun showPreGame(context: Context, match: Match): Boolean {
@@ -170,7 +212,12 @@ object GameNotificationManager {
         } else {
             players
         }
-        return show(context, matchId, ALERT_LINEUP, status.ifBlank { "Escalação oficial" }, body)
+        val title = status.ifBlank { "Escalação oficial" }
+        val alertKey = ALERT_LINEUP + "_" + title
+            .lowercase()
+            .replace(Regex("[^a-z0-9]+"), "_")
+            .trim('_')
+        return show(context, matchId, alertKey, title, body)
     }
 
     fun showEvent(context: Context, matchId: Long, event: MatchEvent): Boolean {

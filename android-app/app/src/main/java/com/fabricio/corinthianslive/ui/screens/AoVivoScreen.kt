@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.produceState
@@ -54,7 +55,9 @@ import com.fabricio.corinthianslive.ui.components.LoadingState
 import com.fabricio.corinthianslive.ui.components.Pill
 import com.fabricio.corinthianslive.ui.components.TeamBlock
 import com.fabricio.corinthianslive.ui.theme.CorinthiansColors
+import com.fabricio.corinthianslive.notifications.GameNotificationManager
 import kotlinx.coroutines.delay
+import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
@@ -65,8 +68,8 @@ fun AoVivoScreen(contentPadding: PaddingValues) {
     var refresh by remember { mutableIntStateOf(0) }
     val state by produceState<Result<RepositoryResult<LiveContent>>?>(null, refresh) {
         while (true) {
-            value = runCatching { repository.live() }
-            delay(30_000)
+            value = runCatching { repository.liveRealtime() }
+            delay(10_000)
         }
     }
     val result = state?.getOrNull()
@@ -82,7 +85,7 @@ fun AoVivoScreen(contentPadding: PaddingValues) {
             bottom = contentPadding.calculateBottomPadding() + 18.dp
         )
     ) {
-        item { CorinthiansTopBar("Ao vivo", "Atualização automática lance a lance", onRefresh = { refresh++ }) }
+        item { CorinthiansTopBar("Ao vivo", "Sincronização direta a cada 10 segundos", onRefresh = { refresh++ }) }
         if (result != null) item { DataStatus(result.source, result.generatedAt, result.notice, result.isDemo) }
         when {
             state == null -> item { LoadingState() }

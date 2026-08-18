@@ -39,7 +39,7 @@ class GameDayWorker(
                 if (minutesToStart in -10..2) {
                     GameNotificationManager.showKickoff(applicationContext, match)
                 }
-                if (match.resolvedStatus(now) == "LIVE" || minutesToStart in -240..0) {
+                if (match.resolvedStatus(now) == "LIVE" || minutesToStart in -240..30) {
                     GameNotificationManager.startLiveTracking(applicationContext, match.id)
                 }
             }
@@ -49,7 +49,7 @@ class GameDayWorker(
                 Duration.between(now, kickoff).toMinutes() in -240..90
             }
             if (nearGame != null) {
-                val live = repository.live().data
+                val live = repository.liveRealtime(nearGame.id).data
                 if (live.match?.id == nearGame.id && (live.homeSquad != null || live.awaySquad != null)) {
                     GameNotificationManager.showLineup(
                         applicationContext,

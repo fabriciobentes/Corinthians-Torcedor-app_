@@ -22,7 +22,8 @@ class MatchAlertWorker(
             when (alert) {
                 GameNotificationManager.ALERT_PRE_GAME -> {
                     GameNotificationManager.showPreGame(applicationContext, match)
-                    val live = repository.live().data
+                    GameNotificationManager.startLiveTracking(applicationContext, matchId)
+                    val live = repository.liveRealtime(matchId).data
                     if (live.match?.id == matchId && (live.homeSquad != null || live.awaySquad != null)) {
                         GameNotificationManager.showLineup(
                             applicationContext,

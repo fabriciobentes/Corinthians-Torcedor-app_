@@ -2,4 +2,6 @@
     <string name="app_name">Corinthians torcedor</string>
     <string name="game_notification_channel_name">Jogos do Corinthians</string>
     <string name="game_notification_channel_description">Pré-jogo, escalações e todos os eventos publicados durante a partida</string>
+    <string name="live_tracking_channel_name">Acompanhamento em tempo real</string>
+    <string name="live_tracking_channel_description">Mantém a partida sincronizada a cada poucos segundos</string>
 </resources>
